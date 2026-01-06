@@ -14,37 +14,43 @@
 
 NAMESPACE_BEGIN_KSTRINGS
 
-bool CModule::Contains(u64 address) const
+bool CModule::Contains(u64 iAddress) const
 {
     // Check if this module contains the specified address
     // Convert pointers to u64 for safe comparison
-    u64 base = (u64)m_ModuleDetails.modBaseAddr;
-    u64 size = (u64)m_ModuleDetails.modBaseSize;
+    u64 iBase = (u64)m_ModuleDetails.modBaseAddr;
+    u64 iSize = (u64)m_ModuleDetails.modBaseSize;
     
-    return (address >= base) && (address < base + size);
+    return (iAddress >= iBase) && (iAddress < iBase + iSize);
 }
 
 std::string CModule::GetFilepath() const
 {
     // Use std::filesystem for robust Wide -> UTF8 string conversion
     // This avoids std::codecvt deprecation warnings
-    try {
+    try 
+    {
         return std::filesystem::path(m_ModuleDetails.szExePath).string();
-    } catch (...) {
+    } 
+    catch (...) 
+    {
         return "";
     }
 }
 
 std::string CModule::GetFilename() const
 {
-    try {
+    try 
+    {
         return std::filesystem::path(m_ModuleDetails.szModule).string();
-    } catch (...) {
+    } 
+    catch (...) 
+    {
         return "";
     }
 }
 
-bool CModule::operator== (const CModule &other) const
+bool CModule::operator== (const CModule& other) const
 {
     return this->m_ModuleDetails.hModule == other.m_ModuleDetails.hModule;
 }
