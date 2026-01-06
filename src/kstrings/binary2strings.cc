@@ -162,8 +162,8 @@ CExtractedString* TryExtractString( const u8* pBuffer,
 
     // The non-basic-latin language group identified
     s32 group = -1;
-    usize iLocalOffset = iOffset;
-    usize iCharCount = 0;
+    iLocalOffset = iOffset;
+    iCharCount = 0;
 
     // Parse as unicode
     while ( iLocalOffset + 1 < iBufferSize )
