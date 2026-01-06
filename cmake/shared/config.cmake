@@ -5,6 +5,26 @@ else()
 # Add src as an include directory
 target_include_directories(${KEN_PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
+#===-------------------------------------===
+# Multi Processor Configuration
+#===-------------------------------------===
+ProcessorCount(KEN_NUM_OF_PROCESSORS)
+
+# Turn on multi processor compilation
+if (KEN_COMPILER_MSVC AND NOT KEN_COMPILER_CLANG_CL)
+    target_compile_options(${KEN_PROJECT_NAME} PRIVATE /MP)
+else()
+    # Set makefile generator flags for parallel builds
+    #
+    # Make, Ninja, and others support the -j flag to specify
+    # the number of parallel jobs to use.
+    if (CMAKE_GENERATOR MATCHES "Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja")
+        if (KEN_NUM_OF_PROCESSORS GREATER 1)
+            set(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${KEN_NUM_OF_PROCESSORS}")
+        endif()
+    endif()
+endif()
+
 # Debug builds have no optimizations
 if (KEN_BUILD_CONFIG STREQUAL "Debug")
     if (KEN_COMPILER_MSVC)

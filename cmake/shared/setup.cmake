@@ -150,25 +150,5 @@ endif()
 # TODO: SIMDs
 
 #===-------------------------------------===
-# Multi Processor Configuration
-#===-------------------------------------===
-ProcessorCount(KEN_NUM_OF_PROCESSORS)
-
-# Turn on multi processor compilation
-if (KEN_COMPILER_MSVC AND NOT KEN_COMPILER_CLANG_CL)
-    target_compile_options(${AAO_PROJECT_NAME} PRIVATE /MP)
-else()
-    # Set makefile generator flags for parallel builds
-    #
-    # Make, Ninja, and others support the -j flag to specify
-    # the number of parallel jobs to use.
-    if (CMAKE_GENERATOR MATCHES "Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja")
-        if (KEN_NUM_OF_PROCESSORS GREATER 1)
-            set(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${KEN_NUM_OF_PROCESSORS}")
-        endif()
-    endif()
-endif()
-
-#===-------------------------------------===
 # Status Output
 #===-------------------------------------===
