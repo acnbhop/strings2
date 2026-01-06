@@ -5,8 +5,14 @@
 
 #if defined(__clang__)
 #define KEN_COMPILER_CLANG 1
+#if defined(__apple_build_version__)
+#define KEN_COMPILER_APPLE_CLANG 1
+#else
+#define KEN_COMPILER_APPLE_CLANG 0
+#endif
 #else
 #define KEN_COMPILER_CLANG 0
+#define KEN_COMPILER_APPLE_CLANG 0
 #endif
 
 #if KEN_COMPILER_CLANG && defined(_MSC_VER)
@@ -88,6 +94,11 @@
 #include <filesystem>
 #include <string>
 #include <iostream>
+
+// Apple Clang needs this for std::stringstream
+#if KEN_COMPILER_APPLE_CLANG
+#include <sstream>
+#endif
 
 namespace kstrings
 {
