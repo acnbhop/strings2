@@ -20,13 +20,13 @@ add_library(kstringslib STATIC
     src/kstrings/binary2strings.hh
     src/kstrings/extracted-string.cc
     src/kstrings/extracted-string.hh
+    src/kstrings/globals.hh
     src/kstrings/memory-strings.cc
     src/kstrings/memory-strings.hh
     src/kstrings/module.cc
     src/kstrings/module.hh
     src/kstrings/print-buffer.cc
     src/kstrings/print-buffer.hh
-    src/kstrings/string-model.hh
     src/kstrings/string-parser.cc
     src/kstrings/string-parser.hh
 )
