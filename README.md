@@ -3,6 +3,18 @@ This is fork of 'strings2' and is intended to be cross-platform.
 
 Uses CMake for building.
 
+## Build Status
+
+|Compiler|Passing|Notes|
+|--------|-------|-----|
+|Apple Clang|✅||
+|Apple GCC|❔||
+|Visual Studio 2022|✅|
+|Visual Studio 2026|✅|
+|Clang (Windows)|✅|
+|MinGW GCC|⚠️|Do not define ``AAO_USE_SANITIZERS`` to ``ON``, sanitizer doesn't work on MinGW??|
+|MinGW Clang|❔||
+
 ## Documentation
 
 ```kstrings (options) file_pattern```

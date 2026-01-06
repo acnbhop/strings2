@@ -1,3 +1,0 @@
-VS2022              - Pass
-Clang Win           - Pass
-MinGW Ucrt GNU      - Pass, needs AAO_USE_SANITIZERS to be off.
