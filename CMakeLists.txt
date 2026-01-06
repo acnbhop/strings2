@@ -18,4 +18,3 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 include(cmake/global.cmake)
 include(cmake/projects/kstrings.cmake)
-include(cmake/projects/kstringslib.cmake)

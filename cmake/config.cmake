@@ -1,6 +1,6 @@
 #
 # config.cmake
-#       Common configuration settings.
+#       Configuration settings.
 #
 
 # Add src as an include directory
