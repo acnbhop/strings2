@@ -85,8 +85,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /RTC1)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        target_compile_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
-        target_link_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
+        # If it's true
+        if (AAO_USE_SANITIZERS STREQUAL "ON")
+            target_compile_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
+            target_link_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
+        endif()
     endif()
 endif()
 
