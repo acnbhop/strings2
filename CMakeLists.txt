@@ -18,6 +18,7 @@ add_library(kstringslib STATIC
     src/kstrings/basics.hh
     src/kstrings/binary2strings.cc
     src/kstrings/binary2strings.hh
+    src/kstrings/core.hh
     src/kstrings/extracted-string.cc
     src/kstrings/extracted-string.hh
     src/kstrings/globals.hh
@@ -41,6 +42,13 @@ target_link_libraries(kstrings PRIVATE kstringslib)
 # Define unicode if we do not have it already
 if (NOT DEFINED UNICODE)
     target_compile_definitions(kstrings PRIVATE UNICODE _UNICODE)
+endif()
+
+# Turn on multi processor compilation
+if (MSVC)
+    target_compile_options(kstrings PRIVATE /MP)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(kstrings PRIVATE -j)
 endif()
 
 # Make sure application on MSVC is a "console" application.
