@@ -1,8 +1,3 @@
-#
-# global.cmake
-#       Shared across all projects.
-#
-
 # Multiconfig or singleconfig generator?
 if(CMAKE_CONFIGURATION_TYPES)
     set(KEN_MULTICONFIG TRUE)
@@ -177,11 +172,3 @@ endif()
 #===-------------------------------------===
 # Status Output
 #===-------------------------------------===
-message(STATUS "KEN_MULTICONFIG:                ${KEN_MULTICONFIG}")
-message(STATUS "KEN_BUILD_CONFIG:               ${KEN_BUILD_CONFIG}")
-message(STATUS "KEN_COMPILER_MSVC:              ${KEN_COMPILER_MSVC}")
-message(STATUS "KEN_COMPILER_CLANG_CL:          ${KEN_COMPILER_CLANG_CL}")
-message(STATUS "KEN_COMPILER_CLANG:             ${KEN_COMPILER_CLANG}")
-message(STATUS "KEN_COMPILER_GCC:               ${KEN_COMPILER_GCC}")
-message(STATUS "KEN_COMPILER_APPLE_CLANG:       ${KEN_COMPILER_APPLE_CLANG}")
-message(STATUS "KEN_NUM_OF_PROCESSORS:          ${KEN_NUM_OF_PROCESSORS}")
