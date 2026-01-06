@@ -1,3 +1,6 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/memory-strings.hh
+//===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
@@ -16,7 +19,8 @@
 
 __NS_BEGIN_KSTRINGS
 
-struct MBI_BASIC_INFO
+// Structure that holds basic MBI information
+struct sMBIBasicInfo
 {
     u64 iBase;
     u64 iEnd;
@@ -26,19 +30,27 @@ struct MBI_BASIC_INFO
     u64 iSize;
 };
 
+// Memory strings dumper class
 class CMemoryStrings
 {
-    std::vector<CModule> m_modules;
-    CStringParser* m_parser;
+    std::vector<CModule> m_modules;     // List of modules in the process
+    CStringParser* m_parser;            // String parser instance
 
+    // Generate the module list for the process
     void _GenerateModuleList(HANDLE hSnapshot);
+    // Process all memory regions in the process
     bool _ProcessAllMemory(HANDLE ph, std::string process_name);
-    MBI_BASIC_INFO _GetMbiInfo(unsigned __int64 address, HANDLE ph);
+    // Get basic MBI information for an address
+    sMBIBasicInfo _GetMbiInfo(u64 address, HANDLE ph);
 public:
+    // Constructor
     CMemoryStrings(CStringParser* parser);
+    // Dump the process memory strings
     bool DumpProcess(DWORD pid);
+    // Dump the system memory strings
     bool DumpSystem();
 
+    // Destructor
     ~CMemoryStrings(void);
 };
 

@@ -1,3 +1,6 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/basics.hh
+//===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
@@ -8,8 +11,7 @@
 
 __NS_BEGIN_KSTRINGS
 
-// Windows: Prints GetLastError() and FormatMessage
-// Linux/Mac: Prints errno and strerror()
-void PrintLastError( const std::string& msg );
+// Print the last error message from the system
+void PrintLastError( const std::string& szMsg );
 
 __NS_END_KSTRINGS

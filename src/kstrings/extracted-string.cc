@@ -1,3 +1,7 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/extracted-string.cc
+//===------------------------------------------------------------------------------------------===//
+
 // Core header
 #include "kstrings/core.hh"
 
@@ -10,7 +14,7 @@ std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
 
 CExtractedString::CExtractedString()
 {
-    m_Type = TYPE_UNDETERMINED;
+    m_Type = eStringType::Undetermined;
     m_String = (std::string) NULL;
     m_SizeInBytes = 0;
     m_OffsetStart = 0;
@@ -114,17 +118,17 @@ eStringType CExtractedString::GetType()
 
 std::string CExtractedString::GetTypeString()
 {
-    if ( m_Type == TYPE_UTF8 )
+    if ( m_Type == eStringType::UTF8 )
     {
         return "UTF8";
     }
-    else if ( m_Type == TYPE_WIDE_STRING )
+    else if ( m_Type == eStringType::WideString )
     {
-        return "WIDE_STRING";
+        return "WideString";
     }
     else
     {
-        return "UNDETERMINED";
+        return "Undetermined";
     }
 }
 

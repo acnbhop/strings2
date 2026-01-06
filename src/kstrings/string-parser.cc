@@ -1,3 +1,7 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/string-parser.cc
+//===------------------------------------------------------------------------------------------===//
+
 // Core header
 #include "kstrings/core.hh"
 
@@ -14,7 +18,9 @@ bool CStringParser::ParseBlock( unsigned char* buffer, u32 buffer_length, std::s
     if ( buffer != NULL && buffer_length > 0 )
     {
         // Process this buffer
-        std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect = ExtractAllStrings( buffer, buffer_length, this->m_Options.iMinChars, !this->m_Options.bPrintNotInteresting );
+        std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect = 
+            ExtractAllStrings( buffer, buffer_length, this->m_Options.iMinChars, 
+                !this->m_Options.bPrintNotInteresting );
 
         if ( m_Options.bPrintJson )
         {
@@ -26,7 +32,8 @@ bool CStringParser::ParseBlock( unsigned char* buffer, u32 buffer_length, std::s
             {
                 Json["strings"][i]["string"] = std::get<0>( r_vect[i] );
                 Json["strings"][i]["type"] = std::get<1>( r_vect[i] );
-                Json["strings"][i]["span"] = { std::get<2>( r_vect[i] ).first + base_address, std::get<2>( r_vect[i] ).second + base_address };
+                Json["strings"][i]["span"] = { std::get<2>( r_vect[i] ).first + base_address, 
+                    std::get<2>( r_vect[i] ).second + base_address };
                 Json["strings"][i]["is_interesting"] = std::get<3>( r_vect[i] );
             }
             this->m_Printer->AddJsonString( Json.dump() );
@@ -53,7 +60,9 @@ bool CStringParser::ParseBlock( unsigned char* buffer, u32 buffer_length, std::s
                     if ( m_Options.bPrintSpan )
                     {
                         std::stringstream span;
-                        span << std::hex << "(0x" << (std::get<2>( r_vect[i] ).first + base_address) << ",0x" << (std::get<2>( r_vect[i] ).second + base_address) << "),";
+                        span << std::hex << "(0x" << (std::get<2>
+                            ( r_vect[i] ).first + base_address) << ",0x" << (std::get<2>
+                                ( r_vect[i] ).second + base_address) << "),";
                         this->m_Printer->AddString( span.str() );
                     }
 
@@ -63,26 +72,30 @@ bool CStringParser::ParseBlock( unsigned char* buffer, u32 buffer_length, std::s
                         size_t index = 0;
                         while ( true )
                         {
-              /* Locate the substring to replace. */
+                            /* Locate the substring to replace. */
                             index = str.find( "\n", index );
                             if ( index == std::string::npos ) break;
 
                             /* Make the replacement. */
                             str.replace( index, 1, "\\n" );
-                            /* Advance index forward so the next iteration doesn't pick it up as well. */
+                            /* Advance index forward so the next iteration 
+                                doesn't pick it up as well. 
+                            */
                             index += 2;
                         }
 
                         index = 0;
                         while ( true )
                         {
-              /* Locate the substring to replace. */
+                            /* Locate the substring to replace. */
                             index = str.find( "\r", index );
                             if ( index == std::string::npos ) break;
 
                             /* Make the replacement. */
                             str.replace( index, 1, "\\r" );
-                            /* Advance index forward so the next iteration doesn't pick it up as well. */
+                            /* Advance index forward so the next iteration 
+                                doesn't pick it up as well. 
+                            */
                             index += 2;
                         }
                     }

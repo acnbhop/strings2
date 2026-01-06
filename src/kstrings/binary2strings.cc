@@ -1,3 +1,7 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/binary2strings.cc
+//===------------------------------------------------------------------------------------------===//
+
 // Core header
 #include "kstrings/core.hh"
 
@@ -6,90 +10,106 @@
 
 __NS_BEGIN_KSTRINGS
 
-usize TryUTF8CharStep( const unsigned char* buffer, usize buffer_size, isize offset )
+usize TryUTF8CharStep( const u8* pBuffer, usize iBufferSize, isize iOffset )
 {
     // Returns 0 if it's not likely a valid utf8 character. For ascii range of characters it requires
     // the character to be a displayable character.
-    if ( buffer_size < (usize) offset + 1 )
-        return 0;
-
-    unsigned char first_byte = buffer[offset];
-
-    if ( first_byte < 0x80 )
+    if ( iBufferSize < (usize) iOffset + 1 )
     {
-        if ( IsDisplayableASCII[first_byte] )
-            return 1;
         return 0;
     }
 
-    if ( first_byte < 0xC2 )
+    u8 iFirstByte = pBuffer[iOffset];
+
+    if ( iFirstByte < 0x80 )
+    {
+        if ( IsDisplayableASCII[iFirstByte] )
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    if ( iFirstByte < 0xC2 )
+    {
         return 0; // Ignore continuation bytes, they are non displayable.
-
-    if ( first_byte > 0xF4 )
+    }
+    if ( iFirstByte > 0xF4 )
+    {
         return 0; // Invalid bytes for Utf8, https://en.wikipedia.org/wiki/UTF-8#Invalid_byte_sequences
-
-    if ( first_byte < 0xE0 )
+    }
+    if ( iFirstByte < 0xE0 )
     {
         // 2 byte encoding
-        if ( buffer_size < (usize) offset + 2 )
+        if ( iBufferSize < (usize) iOffset + 2 )
+        {
             return 0;
-
-        if ( (buffer[offset + 1] & 0xC0) != 0x80 )
+        }
+        if ( (pBuffer[iOffset + 1] & 0xC0) != 0x80 )
+        {
             return 0;
+        }
 
         // Now convert the character to wchar_t
-        wchar_t c = 0;
-        c |= (first_byte & 0x1F) << 6;
-        c |= (buffer[offset + 1] & 0x3F);
+        wchar_t cConvert = 0;
+        cConvert |= (iFirstByte & 0x1F) << 6;
+        cConvert |= (pBuffer[iOffset + 1] & 0x3F);
 
         // Require the character to be seen at least once in commoncrawl web scape
-        if ( IsSeenCommonCrawl.find( c ) == IsSeenCommonCrawl.end() )
+        if ( IsSeenCommonCrawl.find( cConvert ) == IsSeenCommonCrawl.end() )
             return 0; // Invalid unicode character
 
         return 2;
     }
 
-    if ( first_byte < 0xF0 )
+    if ( iFirstByte < 0xF0 )
     {
         // 3 byte encoding
-        if ( buffer_size < (usize) offset + 3 )
+        if ( iBufferSize < (usize) iOffset + 3 )
+        {
             return 0;
-
-        if ( (buffer[offset + 1] & 0xC0) != 0x80 )
+        }
+        if ( (pBuffer[iOffset + 1] & 0xC0) != 0x80 )
+        {
             return 0;
-
-        if ( (buffer[offset + 2] & 0xC0) != 0x80 )
+        }
+        if ( (pBuffer[iOffset + 2] & 0xC0) != 0x80 )
+        {
             return 0;
+        }
 
         // Now convert the character to wchar_t
-        wchar_t c = 0;
-        c |= (first_byte & 0x0F) << 12;
-        c |= (buffer[offset + 1] & 0x3F) << 6;
-        c |= (buffer[offset + 2] & 0x3F);
+        wchar_t cConvert = 0;
+        cConvert |= (iFirstByte & 0x0F) << 12;
+        cConvert |= (pBuffer[iOffset + 1] & 0x3F) << 6;
+        cConvert |= (pBuffer[iOffset + 2] & 0x3F);
 
         // Check special cases
-        if ( first_byte == 0xE0 )
+        if ( iFirstByte == 0xE0 )
         {
             // Check for overlong case
-            if ( c < 0x800 )
+            if ( cConvert < 0x800 )
+            {
                 return 0; // Overlong
+            }
         }
-        else if ( first_byte == 0xED )
+        else if ( iFirstByte == 0xED )
         {
             // Check for surrogate pair case
-            if ( c >= 0xD800 && c <= 0xDFFF )
-                return 0;
+            if ( cConvert >= 0xD800 && cConvert <= 0xDFFF )
+            {
+                return 0; // Surrogate pair range
+            }
         }
 
         // Require the character to be seen at least once in commoncrawl web scape
-        if ( IsSeenCommonCrawl.find( c ) == IsSeenCommonCrawl.end() )
+        if ( IsSeenCommonCrawl.find( cConvert ) == IsSeenCommonCrawl.end() )
+        {
             return 0; // Invalid unicode character
-
+        }
         return 3;
     }
-
     // 4 byte encoding is out of scope, since it is outside the Basic Multilingual Plane.
-
     return 0;
 }
 
@@ -100,40 +120,36 @@ s32 GetLanguageGroup( wchar_t c )
     return BMP12BitsToGroup[c >> 4]; // Leading 12 bits identify the language group
 }
 
-// Note: Buffer overrun security checks disabled, since they added ~50% overhead.
 #if KEN_PLATFORM_WINDOWS
 __declspec(safebuffers)
 #endif
-CExtractedString* TryExtractString( const unsigned char* buffer,
-                                    usize buffer_size, isize offset, usize min_chars )
-{
-    // Try extracting the string as either utf8 or unicode wchar format. 
-    // Returns None if it's not a valid string.
-    usize i;
-    usize char_count;
+CExtractedString* TryExtractString( const u8* pBuffer,
+                                    usize iBufferSize, isize iOffset, usize iMinChars )
+{   
+    usize iLocalOffset = 0;
+    usize iCharCount = 0;
 
     // Try to parse as utf8 first
-    usize utf_char_len;
-    utf_char_len = TryUTF8CharStep( buffer, buffer_size, offset );
+    usize UtfCharLength;
+    UtfCharLength = TryUTF8CharStep( pBuffer, iBufferSize, iOffset );
 
-    if ( utf_char_len > 0 )
+    if ( UtfCharLength > 0 )
     {
-        i = offset;
-        char_count = 0;
-        while ( i < buffer_size && utf_char_len > 0 )
+        iLocalOffset = iOffset;
+        while ( iLocalOffset < iBufferSize && UtfCharLength > 0 )
         {
-            i += utf_char_len;
-            char_count++;
+            iLocalOffset += UtfCharLength;
+            iCharCount++;
 
             // Try parse next character
-            utf_char_len = TryUTF8CharStep( buffer, buffer_size, i );
+            UtfCharLength = TryUTF8CharStep( pBuffer, iBufferSize, iLocalOffset );
         }
 
-        if ( char_count >= min_chars )
+        if ( iCharCount >= iMinChars )
         {
             // Return the extracted string
             return new CExtractedString(
-                (char*) (buffer + offset), i - offset, TYPE_UTF8, (s32) offset, (s32) (i - 1)
+                (char*) (pBuffer + iOffset), iLocalOffset - iOffset, eStringType::UTF8, (s32) iOffset, (s32) (iLocalOffset - 1)
             );
         }
 
@@ -145,14 +161,14 @@ CExtractedString* TryExtractString( const unsigned char* buffer,
     // Block. (eg any single BMP block plus latin in the same string is OK)
 
     // The non-basic-latin language group identified
-    int group = -1;
-    i = offset;
-    char_count = 0;
+    s32 group = -1;
+    usize iLocalOffset = iOffset;
+    usize iCharCount = 0;
 
     // Parse as unicode
-    while ( i + 1 < buffer_size )
+    while ( iLocalOffset + 1 < iBufferSize )
     {
-        wchar_t c = *(wchar_t*) (buffer + i);
+        wchar_t c = *(wchar_t*) (pBuffer + iLocalOffset);
 
         if ( c == 0 )
             break;
@@ -184,27 +200,27 @@ CExtractedString* TryExtractString( const unsigned char* buffer,
                 break; // Invalid language transition
         }
 
-        i += 2;
-        char_count++;
+        iLocalOffset += 2;
+        iCharCount++;
     }
 
-    if ( char_count >= min_chars )
+    if ( iCharCount >= iMinChars )
     {
         // Return the extracted string
         return new CExtractedString(
-            (wchar_t*) (buffer + offset), i - offset, TYPE_WIDE_STRING, (s32) offset, (s32) (i - 2)
+            (wchar_t*) (pBuffer + iOffset), iLocalOffset - iOffset, eStringType::WideString, (s32) iOffset, (s32) (iLocalOffset - 2)
         );
     }
 
     return NULL; // Invalid string at this offset
 }
 
-std::tuple<std::string, std::string, std::pair<int, int>, bool>
-TryExtractStringTuple( const unsigned char* buffer, usize buffer_size, isize offset,
-                       usize min_chars, bool only_interesting )
+std::tuple<std::string, std::string, std::pair<s32, s32>, bool>
+TryExtractStringTuple( const u8* pBuffer, usize iBufferSize, isize iOffset,
+                       usize iMinChars, bool only_interesting )
 {
     // Simple wrapper to return a tuple instead
-    CExtractedString* s = TryExtractString( buffer, buffer_size, offset, min_chars );
+    CExtractedString* s = TryExtractString( pBuffer, iBufferSize, iOffset, iMinChars );
     if ( s != NULL )
     {
         bool is_interesting = s->IsInteresting();
@@ -214,7 +230,7 @@ TryExtractStringTuple( const unsigned char* buffer, usize buffer_size, isize off
             auto result = std::make_tuple(
                 s->GetString(),
                 s->GetTypeString(),
-                std::pair<int, int>( s->GetOffsetStart(), s->GetOffsetEnd() ),
+                std::pair<s32, s32>( s->GetOffsetStart(), s->GetOffsetEnd() ),
                 is_interesting
             );
 
@@ -227,34 +243,33 @@ TryExtractStringTuple( const unsigned char* buffer, usize buffer_size, isize off
     return std::make_tuple( "", "", std::make_pair( 0, 0 ), false );
 }
 
-
-std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>>
-ExtractAllStrings( const unsigned char buffer[], usize buffer_size, usize min_chars,
+std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>>
+ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
                    bool only_interesting )
 {
     // Process the specified binary buffer and extract all strings
-    isize offset = 0;
-    std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect;
+    isize iOffset = 0;
+    std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>> r_vect;
     std::vector<float> proba_interesting_vect;
     std::vector<float> proba_interesting_avg_vect;
     CExtractedString* s;
 
     float last_proba_interestings[WINDOW_SIZE] = { 0.0f };
 
-    while ( offset + min_chars <= buffer_size )
+    while ( iOffset + iMinChars <= iBufferSize )
     {
         // Process this offset
-        s = TryExtractString( (unsigned char*) buffer, buffer_size, offset, min_chars );
+        s = TryExtractString( (u8*) pBuffer, iBufferSize, iOffset, iMinChars );
 
         if ( s )
         {
             f32 proba_interesting = s->GetProbaInteresting();
             // Add the new string
             r_vect.push_back(
-                std::tuple<std::string, std::string, std::pair<int, int>, bool>(
+                std::tuple<std::string, std::string, std::pair<s32, s32>, bool>(
                     s->GetString(),
                     s->GetTypeString(),
-                    std::pair<int, int>( s->GetOffsetStart(), s->GetOffsetEnd() ),
+                    std::pair<s32, s32>( s->GetOffsetStart(), s->GetOffsetEnd() ),
                     proba_interesting > 0.5
                 )
             );
@@ -277,20 +292,20 @@ ExtractAllStrings( const unsigned char buffer[], usize buffer_size, usize min_ch
             proba_interesting_vect.push_back( proba_interesting );
 
             // Advance by the byte-length of the string
-            offset += (long) s->GetSizeInBytes();
+            iOffset += (long) s->GetSizeInBytes();
 
             // Cleanup
             delete s;
         }
         else
         {
-      // Advance the offset by 1
-            offset += 1;
+            // Advance the offset by 1
+            iOffset += 1;
         }
     }
 
     // Have a pass through the strings averaging the interestingness and filtering
-    std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect_filt;
+    std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>> r_vect_filt;
     for ( int i = 0; i < r_vect.size(); i++ )
     {
         // Get the interestingness
@@ -308,7 +323,7 @@ ExtractAllStrings( const unsigned char buffer[], usize buffer_size, usize min_ch
         if ( !only_interesting || proba_interesting_avg >= 0.2 || proba_interesting_vect[i] >= 0.5 )
         {
             r_vect_filt.push_back(
-                std::tuple<std::string, std::string, std::pair<int, int>, bool>(
+                std::tuple<std::string, std::string, std::pair<s32, s32>, bool>(
                     std::get<0>( r_vect[i] ),
                     std::get<1>( r_vect[i] ),
                     std::get<2>( r_vect[i] ),

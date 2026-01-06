@@ -1,3 +1,6 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/binary2strings.hh
+//===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
@@ -16,19 +19,24 @@ __NS_BEGIN_KSTRINGS
 
 #define WINDOW_SIZE 11
 
-size_t TryUTF8CharStep( const unsigned char* buffer, usize buffer_size, isize offset );
+// Tries to parse a utf8 character at the specified offset in the buffer.
+size_t TryUTF8CharStep( const u8* pBuffer, usize iBufferSize, isize iOffset );
 
+// Returns the language group of a unicode wchar.
 s32 GetLanguageGroup( wchar_t c );
 
-CExtractedString* TryExtractString( const unsigned char* buffer, usize buffer_size, long offset,
-                                    usize min_chars );
+// Tries to extract a string at the specified offset in the buffer.
+CExtractedString* TryExtractString( const u8* pBuffer, usize iBufferSize, isize iOffset,
+                                    usize iMinChars );
 
-std::tuple<std::string, std::string, std::pair<int, int>, bool>
-try_extract_string_tuple( const unsigned char* buffer, usize buffer_size, long offset,
-                          usize min_chars, bool only_interesting );
+// Tries to extract a string at the specified offset in the buffer, returning a tuple.
+std::tuple<std::string, std::string, std::pair<s32, s32>, bool>
+TryExtractStringTuple( const u8* pBuffer, usize iBufferSize, isize iOffset,
+                       usize iMinChars, bool bOnlyInteresting );
 
-std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>>
-ExtractAllStrings( const unsigned char buffer[], usize buffer_size, usize min_chars,
-                   bool only_interesting );
+// Extracts all strings from the specified binary buffer.
+std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>>
+ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
+                   bool bOnlyInteresting );
 
 __NS_END_KSTRINGS

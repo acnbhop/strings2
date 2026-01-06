@@ -1,13 +1,12 @@
-//
+//===------------------------------------------------------------------------------------------===//
 // main.cc
-//
+//===------------------------------------------------------------------------------------------===//
 
 // Core header
 #include "kstrings/core.hh"
 
-// kstrings headers
-#include "kstrings/string-parser.hh"
-#include "kstrings/memory-strings.hh"
+// All kstrings headers for the main file
+#include "kstrings.hh"
 
 // Standard headers
 #include <vector>

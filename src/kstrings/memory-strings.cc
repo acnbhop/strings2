@@ -1,3 +1,7 @@
+//===------------------------------------------------------------------------------------------===//
+// kstrings/memory-strings.cc
+//===------------------------------------------------------------------------------------------===//
+
 // Core header
 #include "kstrings/core.hh"
 
@@ -26,6 +30,7 @@ CMemoryStrings::CMemoryStrings( CStringParser* parser )
 {
     this->m_parser = parser;
 }
+
 
 CMemoryStrings::~CMemoryStrings( void )
 {}
@@ -96,10 +101,10 @@ bool CMemoryStrings::DumpProcess( DWORD pid )
     return false;
 }
 
-MBI_BASIC_INFO CMemoryStrings::_GetMbiInfo( unsigned __int64 address, HANDLE ph )
+sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 address, HANDLE ph )
 {
     _MEMORY_BASIC_INFORMATION64 mbi;
-    MBI_BASIC_INFO result;
+    sMBIBasicInfo result;
     result.iBase = 0;
     result.iEnd = 0;
     result.iProtect = 0;
@@ -140,20 +145,20 @@ MBI_BASIC_INFO CMemoryStrings::_GetMbiInfo( unsigned __int64 address, HANDLE ph 
 bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
 {
     // Set the max address of the target process. Assume it is a 64 bit process.
-    unsigned __int64 max_address = 0xffffffffffffffff;
+    u64 max_address = 0xffffffffffffffff;
 
     // Walk the process heaps
-    unsigned __int64 address = 0;
+    u64 address = 0;
 
     while ( address < max_address )
     {
         // Load this region information
-        MBI_BASIC_INFO mbi_info = _GetMbiInfo( address, ph );
+        sMBIBasicInfo mbi_info = _GetMbiInfo( address, ph );
 
         if ( mbi_info.iEnd <= address ) // prevent infinite loop if size is 0 or wrap around
             break;
 
-        unsigned __int64 next_address = mbi_info.iEnd;
+        u64 next_address = mbi_info.iEnd;
 
         if ( mbi_info.bValid && mbi_info.iSize > 0 )
         {
