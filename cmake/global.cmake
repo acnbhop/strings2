@@ -15,7 +15,8 @@ endif()
 #===-------------------------------------===
 
 # Define the build configurations
-set(KEN_BUILD_CONFIGURATIONS Debug Profile Beta BankRelease Release Final)
+#set(KEN_BUILD_CONFIGURATIONS Debug Profile Beta BankRelease Release Final)
+set(KEN_BUILD_CONFIGURATIONS Debug Release)
 
 # Setup for either multiconfig or singleconfig scenarios
 if(KEN_MULTICONFIG)
