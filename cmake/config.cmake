@@ -1,7 +1,18 @@
 #
 # config.cmake
-#   Common configuration settings.
+#       Common configuration settings.
 #
+
+# What is our current build configuration?
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(AAO_BUILD_CONFIG "Debug")
+    message(STATUS "Build configuration: Debug")
+elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(AAO_BUILD_CONFIG "Release")
+    message(STATUS "Build configuration: Release")
+else()
+    message(FATAL_ERROR "Unknown build configuration: ${CMAKE_BUILD_TYPE}. Supported configurations are Debug and Release.")
+endif()
 
 # Add src as an include directory
 target_include_directories(${AAO_PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/src")
@@ -21,7 +32,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND MSVC)
 else()
     set(IS_CLANG_CL FALSE)
 endif()
-
 
 # Turn on multi processor compilation
 if (MSVC AND NOT IS_CLANG_CL)
@@ -46,12 +56,12 @@ if (MSVC)
 endif()
 
 # If on windows and we are on debug, define "WIN32" and "_DEBUG"
-if (WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (WIN32 AND AAO_BUILD_CONFIG STREQUAL "Debug")
     target_compile_definitions(${AAO_PROJECT_NAME} PRIVATE WIN32 _DEBUG)
 endif()
 
 # If on windows and we are on release, define "WIN32" and "NDEBUG"
-if (WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Release")
+if (WIN32 AND AAO_BUILD_CONFIG STREQUAL "Release")
     target_compile_definitions(${AAO_PROJECT_NAME} PRIVATE WIN32 NDEBUG)
 endif()
 
@@ -63,7 +73,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # Release builds will enable intrinsic functions
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
+if (AAO_BUILD_CONFIG STREQUAL "Release")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /Oi)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -72,7 +82,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Debug builds have no optimizations
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (AAO_BUILD_CONFIG STREQUAL "Debug")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /Od)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -81,7 +91,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Both for basic runtime checks on Debug
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (AAO_BUILD_CONFIG STREQUAL "Debug")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /RTC1)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -94,21 +104,21 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Multi-threaded debug on "debug"
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (AAO_BUILD_CONFIG STREQUAL "Debug")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /MDd)
     endif()
 endif()
 
 # Multi-threaded on "release"
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
+if (AAO_BUILD_CONFIG STREQUAL "Release")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /MD)
     endif()
 endif()
 
 # Function-level linking on release
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
+if (AAO_BUILD_CONFIG STREQUAL "Release")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /Gy)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -118,7 +128,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Release builds favor maximum optimization
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
+if (AAO_BUILD_CONFIG STREQUAL "Release")
     if (MSVC)
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /O2)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

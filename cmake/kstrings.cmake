@@ -1,7 +1,7 @@
 #
 # kstrings.cmake
 #
-#   Configuration for kstrings executable
+#       Configuration for kstrings executable
 #
 
 add_executable(kstrings

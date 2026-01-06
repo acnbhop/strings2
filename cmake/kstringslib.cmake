@@ -1,7 +1,7 @@
 #
 # kstringslib.cmake
 #
-#   Configuration for kstringslib
+#       Configuration for kstringslib
 #
 
 add_library(kstringslib STATIC
