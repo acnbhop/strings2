@@ -10,13 +10,13 @@ using namespace std;
 
 class module
 {
-	MODULEENTRY32W m_module_details;
+    MODULEENTRY32W m_module_details;
 public:
-	bool contains(PVOID64 address);
-	string get_filepath();
-	string get_filename();
+    bool contains(PVOID64 address);
+    string get_filepath();
+    string get_filename();
 
-	module(MODULEENTRY32W details);
-	~module(void);
-	bool operator== (const module &other) const;
+    module(MODULEENTRY32W details);
+    ~module(void);
+    bool operator== (const module &other) const;
 };

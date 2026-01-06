@@ -3,7 +3,7 @@
 
 void PrintLastError(LPTSTR lpszFunction)
 {
-	// Retrieve the system error message for the last-error code
+    // Retrieve the system error message for the last-error code
     LPVOID lpMsgBuf;
     LPVOID lpDisplayBuf;
     DWORD dw = GetLastError(); 
@@ -26,7 +26,7 @@ void PrintLastError(LPTSTR lpszFunction)
         TEXT("%s failed with error %d: %s"), 
         lpszFunction, dw, lpMsgBuf); 
 
-	fwprintf(stderr,(LPCTSTR) lpDisplayBuf );
+    fwprintf(stderr,(LPCTSTR) lpDisplayBuf );
 
     LocalFree(lpMsgBuf);
     LocalFree(lpDisplayBuf);
