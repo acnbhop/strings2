@@ -31,6 +31,19 @@ add_library(kstringslib STATIC
     src/kstrings/string-parser.hh
 )
 
+# Forceinclude "src/core.hh" for all files in kstrings and kstringslib
+if(MSVC)
+    target_compile_options(kstringslib PRIVATE /FI"${CMAKE_SOURCE_DIR}/src/core.hh")
+    target_compile_options(kstrings PRIVATE /FI"${CMAKE_SOURCE_DIR}/src/core.hh")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(kstringslib PRIVATE -include "${CMAKE_SOURCE_DIR}/src/core.hh")
+    target_compile_options(kstrings PRIVATE -include "${CMAKE_SOURCE_DIR}/src/core.hh")
+endif()
+
+# Add src as an include directory
+target_include_directories(kstringslib PUBLIC "${CMAKE_SOURCE_DIR}/src")
+target_include_directories(kstrings PUBLIC "${CMAKE_SOURCE_DIR}/src")
+
 # Link kstringslib into kstrings executable
 target_link_libraries(kstrings PRIVATE kstringslib)
 
