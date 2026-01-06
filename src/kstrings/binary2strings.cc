@@ -308,9 +308,14 @@ ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
     std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>> r_vect_filt;
 
     // gcc-disable: -Wsign-compare
-    #if KEN_COMPILER_GCC
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wsign-compare"
+    #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+        #if KEN_COMPILER_APPLE_CLANG
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wsign-compare"
+        #else
+            #pragma GCC diagnostic push
+            #pragma GCC diagnostic ignored "-Wsign-compare"
+        #endif
     #endif
 
     for ( int i = 0; i < r_vect.size(); i++ )
@@ -324,8 +329,12 @@ ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
         if ( i + WINDOW_SIZE < proba_interesting_avg_vect.size() )
         {
 
-        #if KEN_COMPILER_GCC
-            #pragma GCC diagnostic pop
+        #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+            #if KEN_COMPILER_APPLE_CLANG
+                #pragma clang diagnostic pop
+            #else
+                #pragma GCC diagnostic pop
+        #   endif
         #endif
 
             if ( proba_interesting_avg_vect[i + WINDOW_SIZE] > proba_interesting_avg )
