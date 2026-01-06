@@ -26,7 +26,8 @@ add_library(kstringslib STATIC
 )
 
 # Set the project name for configuration to apply the settings
-set(AAO_PROJECT_NAME kstringslib)
+set(KEN_PROJECT_NAME kstringslib)
 
 # Apply configuration settings
+include(cmake/globalcore.cmake)
 include(cmake/config.cmake)
