@@ -1,5 +1,8 @@
 #pragma once
 
+// Core header
+#include "kstrings/core.hh"
+
 namespace string_model {
 
     constexpr float bias = -5.624863416835823f;

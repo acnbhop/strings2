@@ -1,8 +1,12 @@
 #pragma once
 
+// Core header
+#include "kstrings/core.hh"
+
+#include "kstrings/extracted-string.hh"
+
 #include <string>
 #include <vector>
-#include "extracted_string.hpp"
 #include <unordered_set>
 
 using namespace std;

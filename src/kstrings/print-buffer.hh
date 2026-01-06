@@ -1,5 +1,8 @@
 #pragma once
 
+// Core header
+#include "kstrings/core.hh"
+
 #include <stdio.h>
 #include <string>
 

@@ -1,8 +1,13 @@
 // Class for extracted strings
 #pragma once
+
+// Core header
+#include "kstrings/core.hh"
+
+#include "kstrings/string-model.hh"
+
 #include <string>
 #include <codecvt>
-#include "string_model.h"
 #include <unordered_set>
 
 using namespace std;

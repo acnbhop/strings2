@@ -3,6 +3,27 @@
 #pragma once
 #pragma execution_character_set( "utf-8" )
 
+// Core header
+#include "kstrings/core.hh"
+
+// kstrings headers
+#include "kstrings/string-parser.hh"
+#include "kstrings/memory-strings.hh"
+
+#include "windows.h"
+#include <sys/types.h>
+#include <errno.h>
+#include <vector>
+#include <string>
+#include <iostream>
+#include "Shlwapi.h"
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <string>
+#include <filesystem>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
 
 
 using namespace std;

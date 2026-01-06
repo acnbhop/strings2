@@ -1,6 +1,9 @@
 #pragma once
 
-#include <windows.h>
-#include <strsafe.h>
+// Core header
+#include "kstrings/core.hh"
 
-void PrintLastError(LPTSTR lpszFunction); 
+// Standard headers
+#include <string>
+
+void PrintLastError(const std::string& msg);

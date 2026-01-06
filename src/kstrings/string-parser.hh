@@ -1,11 +1,18 @@
 #pragma once
+
+// Core header
+#include "kstrings/core.hh"
+
+#include "kstrings/print-buffer.hh"
+#include "kstrings/binary2strings.hh"
+
 #include <string>
 #include "windows.h"
-#include "print_buffer.h"
-#include "binary2strings.hpp"
-#include "json.hpp"
 #include <algorithm>
 #include <errno.h>
+
+#include "extern/json.hpp"
+
 
 using namespace std;
 

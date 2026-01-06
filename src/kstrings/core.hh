@@ -54,6 +54,10 @@
 #include <cstdint>
 #include <cstddef>
 
+#include <filesystem>
+#include <string>
+#include <iostream>
+
 namespace kstrings
 {
 

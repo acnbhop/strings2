@@ -1,11 +1,16 @@
 #pragma once
+
+// Core header
+#include "kstrings/core.hh"
+
+#include "kstrings/module.hh"
+#include "kstrings/string-parser.hh"
+#include "kstrings/basics.hh"
+
 #include "windows.h"
-#include "module.h"
 #include <tlhelp32.h>
-#include "string_parser.h"
 #include <Psapi.h>
 #include <vector>
-#include "basics.h"
 #include <string>
 #include <sstream>
 
