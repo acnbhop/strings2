@@ -79,21 +79,21 @@
 #pragma comment(lib, "Shlwapi.lib")
 #endif
 #define NOMINMAX
-#include <Windows.h>
-#include <tlhelp32.h>
 #include <Psapi.h>
+#include <Windows.h>
 #include <errno.h>
+#include <tlhelp32.h>
 #if !KEN_COMPILER_GCC
 #pragma comment(lib, "Psapi.lib")
 #endif
 #endif
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 #include <filesystem>
-#include <string>
 #include <iostream>
+#include <string>
 
 // Apple Clang needs this for std::stringstream
 #if KEN_COMPILER_APPLE_CLANG
@@ -125,28 +125,19 @@ using usize = std::size_t;
 using isize = std::ptrdiff_t;
 
 // min
-template<typename T>
-constexpr const T& min( const T& a, const T& b )
-{
-    return ( a < b ) ? a : b;
-}
+template <typename T> constexpr const T& min(const T& a, const T& b) { return (a < b) ? a : b; }
 
 // max
-template<typename T>
-constexpr const T& max( const T& a, const T& b )
-{
-    return ( a > b ) ? a : b;
-}
+template <typename T> constexpr const T& max(const T& a, const T& b) { return (a > b) ? a : b; }
 
 // exp
-template<typename T>
-constexpr T exp( T x )
+template <typename T> constexpr T exp(T x)
 {
     T result = 1;
     T term = 1;
-    for ( usize n = 1; n < 20; ++n )
+    for (usize n = 1; n < 20; ++n)
     {
-        term *= x / static_cast<T>( n );
+        term *= x / static_cast<T>(n);
         result += term;
     }
     return result;
@@ -154,7 +145,9 @@ constexpr T exp( T x )
 
 } // namespace kstrings
 
-#define NAMESPACE_BEGIN_KSTRINGS      namespace kstrings {
-#define NAMESPACE_END_KSTRINGS        }
+#define NAMESPACE_BEGIN_KSTRINGS                                                                   \
+    namespace kstrings                                                                             \
+    {
+#define NAMESPACE_END_KSTRINGS }
 
 #include "kstrings/globals.hh"

@@ -3,6 +3,8 @@
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
+// clang-format off
+
 // Core header
 #include "kstrings/core.hh"
 
@@ -660,3 +662,5 @@ constexpr f64 fWeights[118 + 118 + 118 * 118 + 1 + 1 + 1] = {
 #endif
 
 NAMESPACE_END_KSTRINGS
+
+// clang-format on

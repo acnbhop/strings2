@@ -7,8 +7,8 @@
 #include "kstrings/core.hh"
 
 // kstrings headers
-#include "kstrings/print-buffer.hh"
 #include "kstrings/binary2strings.hh"
+#include "kstrings/print-buffer.hh"
 
 // Standard headers
 #include <algorithm>
@@ -26,19 +26,19 @@ constexpr f64 iBlockSize = 5e+7;
 
 struct sStringOptions
 {
-    bool bPrintUTF8 = true;                 // Print UTF8 strings
-    bool bPrintWideString = true;           // Print Wide strings
-    bool bPrintStringType = false;          // Print the string type (UTF8/WIDE)
-    bool bPrintInteresting = true;          // Print only interesting strings
-    bool bPrintNotInteresting = false;      // Print non-interesting strings
-    bool bPrintFilename = false;            // Print the filename
-    bool bPrintFilepath = false;            // Print the filepath
-    bool bPrintSpan = false;                // Print the string span (offsets)
-    bool bPrintJson = false;                // Print output as JSON
-    bool bEscapeNewLines = false;           // Escape new lines in strings
-    s32 iMinChars = 4;                      // Minimum characters to consider a string
-    usize iOffsetStart = 0;                 // Start offset in the file to start parsing
-    usize iOffsetEnd = 0;                   // End offset in the file to stop parsing (0 = EOF)
+    bool bPrintUTF8 = true;            // Print UTF8 strings
+    bool bPrintWideString = true;      // Print Wide strings
+    bool bPrintStringType = false;     // Print the string type (UTF8/WIDE)
+    bool bPrintInteresting = true;     // Print only interesting strings
+    bool bPrintNotInteresting = false; // Print non-interesting strings
+    bool bPrintFilename = false;       // Print the filename
+    bool bPrintFilepath = false;       // Print the filepath
+    bool bPrintSpan = false;           // Print the string span (offsets)
+    bool bPrintJson = false;           // Print output as JSON
+    bool bEscapeNewLines = false;      // Escape new lines in strings
+    s32 iMinChars = 4;                 // Minimum characters to consider a string
+    usize iOffsetStart = 0;            // Start offset in the file to start parsing
+    usize iOffsetEnd = 0;              // End offset in the file to stop parsing (0 = EOF)
 };
 
 // String parser class
@@ -46,29 +46,30 @@ class CStringParser
 {
     enum class eExtractType
     {
-        EXT_Raw,                // Extract raw strings
-        EXT_Asm                 // Extract strings from assembly (x86/x64)
+        EXT_Raw, // Extract raw strings
+        EXT_Asm  // Extract strings from assembly (x86/x64)
     };
 
     enum class eStringType
     {
-        EST_Undetermined,       // Undetermined string type
-        EST_ASCII,              // ASCII string type
-        EST_Unicode             // Unicode string type
+        EST_Undetermined, // Undetermined string type
+        EST_ASCII,        // ASCII string type
+        EST_Unicode       // Unicode string type
     };
 
-    sStringOptions m_Options;   // String parsing options
-    CPrintBuffer* m_Printer;    // Print buffer
+    sStringOptions m_Options; // String parsing options
+    CPrintBuffer* m_Printer;  // Print buffer
 
 public:
     // Constructor
-    CStringParser( sStringOptions Options );
+    CStringParser(sStringOptions Options);
     // Parse a memory block
-    bool ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNameShort, std::string szNameLong, u64 iBaseAddress );
+    bool ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNameShort, std::string szNameLong,
+                    u64 iBaseAddress);
     // Parse a file stream
-    bool ParseStream( FILE* pFileHandle, std::string szNameShort, std::string szNameLong );
+    bool ParseStream(FILE* pFileHandle, std::string szNameShort, std::string szNameLong);
     // Destructor
-    ~CStringParser( void );
+    ~CStringParser(void);
 };
 
 NAMESPACE_END_KSTRINGS

@@ -14,10 +14,11 @@ class CModule
 {
     // Detailed module information
     MODULEENTRY32W m_ModuleDetails;
+
 public:
     // Takes u64 to match the address type used in memory-strings.cc
     bool Contains(u64 iAddress) const;
-    
+
     // Gets the module filepath
     std::string GetFilepath() const;
     // Gets the module filename
@@ -27,8 +28,8 @@ public:
     CModule(MODULEENTRY32W details);
     // Destructor
     ~CModule(void);
-    
-    bool operator== (const CModule& other) const;
+
+    bool operator==(const CModule& other) const;
 };
 
 NAMESPACE_END_KSTRINGS

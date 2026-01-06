@@ -9,27 +9,24 @@
 #include "kstrings.hh"
 
 // Standard headers
-#include <vector>
-#include <cstring>
 #include <algorithm>
+#include <cstring>
+#include <vector> 
 
 #if KEN_PLATFORM_WINDOWS
-#include <io.h>
 #include <fcntl.h>
+#include <io.h>
 // Define a helper to set the console output to UTF-8 on windows.
-void SetConsoleUTF8()
-{
-    SetConsoleOutputCP( 65001 );
-}
+void SetConsoleUTF8 () { SetConsoleOutputCP (65001); }
 #else
 #include <unistd.h>
 // Standard terminals usually handle this for us.
-void SetConsoleUTF8() {}
+void SetConsoleUTF8 () {}
 #endif
 
-int main( int argc, char* argv[] )
+int main (int argc, char *argv[])
 {
-    SetConsoleUTF8();
+    SetConsoleUTF8 ();
 
     kstrings::sStringOptions options;
     std::string szFilterArg = "";
@@ -41,77 +38,93 @@ int main( int argc, char* argv[] )
 
     // Check for piped input
 #if KEN_PLATFORM_WINDOWS
-    bool bPipedInput = !_isatty( _fileno( stdin ) );
+    bool bPipedInput = !_isatty (_fileno (stdin));
 #else
-    bool bPipedInput = !isatty( fileno( stdin ) );
+    bool bPipedInput = !isatty (fileno (stdin));
 #endif
 
-    if ( argc <= 1 && !bPipedInput ) bFlagHelp = true;
+    if (argc <= 1 && !bPipedInput)
+        bFlagHelp = true;
 
-    for ( int i = 1; i < argc; i++ )
+    for (int i = 1; i < argc; i++)
     {
         std::string arg = argv[i];
 
-        if ( arg == "--help" || arg == "-help" || arg == "-h" ) bFlagHelp = true;
-        else if ( arg == "-f" ) options.bPrintFilename = true;
-        else if ( arg == "-F" ) options.bPrintFilepath = true;
-        else if ( arg == "-r" ) bFlagRecursive = true;
-        else if ( arg == "-t" ) options.bPrintStringType = true;
-        else if ( arg == "-s" ) options.bPrintSpan = true;
-        else if ( arg == "-e" ) options.bEscapeNewLines = true;
-        else if ( arg == "-json" ) options.bPrintJson = true;
-        else if ( arg == "-a" )
+        if (arg == "--help" || arg == "-help" || arg == "-h")
+            bFlagHelp = true;
+        else if (arg == "-f")
+            options.bPrintFilename = true;
+        else if (arg == "-F")
+            options.bPrintFilepath = true;
+        else if (arg == "-r")
+            bFlagRecursive = true;
+        else if (arg == "-t")
+            options.bPrintStringType = true;
+        else if (arg == "-s")
+            options.bPrintSpan = true;
+        else if (arg == "-e")
+            options.bEscapeNewLines = true;
+        else if (arg == "-json")
+            options.bPrintJson = true;
+        else if (arg == "-a")
         {
             options.bPrintInteresting = true;
             options.bPrintNotInteresting = true;
         }
-        else if ( arg == "-ni" )
+        else if (arg == "-ni")
         {
             options.bPrintInteresting = false;
             options.bPrintNotInteresting = true;
         }
-        else if ( arg == "-utf" || arg == "-utf8" )
+        else if (arg == "-utf" || arg == "-utf8")
         {
             options.bPrintUTF8 = true;
             options.bPrintWideString = false;
         }
-        else if ( arg == "-w" || arg == "-wide" )
+        else if (arg == "-w" || arg == "-wide")
         {
             options.bPrintUTF8 = false;
             options.bPrintWideString = true;
         }
-        else if ( arg == "-pid" ) bFlagDumpPid = true;
-        else if ( arg == "-system" ) bFlagDumpSystem = true;
-        else if ( arg == "-l" )
+        else if (arg == "-pid")
+            bFlagDumpPid = true;
+        else if (arg == "-system")
+            bFlagDumpSystem = true;
+        else if (arg == "-l")
         {
-            if ( i + 1 < argc )
+            if (i + 1 < argc)
             {
                 try
                 {
-                    options.iMinChars = std::stoi( argv[i + 1] );
+                    options.iMinChars = std::stoi (argv[i + 1]);
                     i++;
                 }
-                catch ( ... ) {}
+                catch (...)
+                {
+                }
             }
         }
-        else if ( arg == "-b" )
+        else if (arg == "-b")
         {
             // Basic implementation of byte range args
-            if ( i + 1 < argc )
+            if (i + 1 < argc)
             {
-                // To keep it simple, we just parse the next int. 
+                // To keep it simple, we just parse the next int.
                 // A full implementation would parse "start:end"
                 try
                 {
-                    options.iOffsetStart = std::stoull( argv[i + 1] );
+                    options.iOffsetStart = std::stoull (argv[i + 1]);
                     i++;
                 }
-                catch ( ... ) {}
+                catch (...)
+                {
+                }
             }
         }
         else
         {
-            if ( szFilterArg.empty() ) szFilterArg = arg;
+            if (szFilterArg.empty ())
+                szFilterArg = arg;
             else
             {
                 std::cerr << "Unknown argument: " << arg << std::endl;
@@ -120,116 +133,129 @@ int main( int argc, char* argv[] )
         }
     }
 
-    if ( bFlagHelp )
+    if (bFlagHelp)
     {
-        printf( "kstrings extracts all unicode/ascii strings from binary data. On top of the classical strings approach, this version decodes multilingual strings (eg Chinese, Russian, etc) and uses a ML model to suppress noisy uninteresting strings.\n\n" );
-        printf( "Example Usage:\n" );
-        printf( "\tkstrings malware.exe\n" );
-        printf( "\tkstrings *.exe > strings.txt\n" );
-        printf( "\tkstrings ./files/*.exe > strings.txt\n" );
-        printf( "\tkstrings -pid 419 > process_strings.txt\n" );
-        printf( "\tkstrings -f -s -pid 0x1a3 > process_strings.txt\n" );
-        printf( "\tkstrings -system > all_process_strings.txt\n" );
-    #if KEN_PLATFORM_WINDOWS
-        printf( "\ttype abcd.exe | kstrings > out.txt\n\n" );
-    #else
-        printf( "\tcat abcd.exe | kstrings > out.txt\n\n" );
-    #endif
-        printf( "\tkstrings malware.exe -json > strings.json\n" );
-        printf( "Flags:\n" );
-        printf( " -r\n\tRecursively process subdirectories.\n" );
-        printf( " -f\n\tPrints the filename/processname for each string.\n" );
-        printf( " -F\n\tPrints the full path and filename for each string.\n" );
-        printf( " -s\n\tPrints the file offset or memory address span\n\tof each string.\n" );
-        printf( " -t\n\tPrints the string type for each string. UTF8,\n\tor WIDE_STRING.\n" );
-        printf( " -wide\n\tPrints only WIDE_STRING strings that are encoded\n\tas two bytes per character.\n" );
-        printf( " -utf\n\tPrints only UTF8 encoded strings.\n" );
-        printf( " -a\n\tPrints both interesting and not interesting strings.\n\tDefault only prints interesting non-junk strings.\n" );
-        printf( " -ni\n\tPrints only not interesting strings. Default only\n\tprints interesting non-junk strings.\n" );
-        printf( " -e\n\tEscape new line characters.\n" );
-        printf( " -l [numchars]\n\tMinimum number of characters that is a valid string.\n\tDefault is 4.\n" );
-        printf( " -b [start](:[end])\n\tScan only the specified byte range for strings.\n" );
-        printf( " -pid [pid]\n\tThe strings from the process address space for the\n\tspecified PID will be dumped. Use a '0x' prefix to\n\tspecify a hex PID. (Windows Only)\n" );
-        printf( " -system\n\tDumps strings from all accessible processes on the\n\tsystem. This takes awhile. (Windows Only)\n" );
-        printf( " -json\n\tWrites output as json. Many flags are ignored in this mode.\n" );
+        printf (
+            "kstrings extracts all unicode/ascii strings from binary data. On top of the classical "
+            "strings approach, this version decodes multilingual strings (eg Chinese, Russian, "
+            "etc) and uses a ML model to suppress noisy uninteresting strings.\n\n");
+        printf ("Example Usage:\n");
+        printf ("\tkstrings malware.exe\n");
+        printf ("\tkstrings *.exe > strings.txt\n");
+        printf ("\tkstrings ./files/*.exe > strings.txt\n");
+        printf ("\tkstrings -pid 419 > process_strings.txt\n");
+        printf ("\tkstrings -f -s -pid 0x1a3 > process_strings.txt\n");
+        printf ("\tkstrings -system > all_process_strings.txt\n");
+#if KEN_PLATFORM_WINDOWS
+        printf ("\ttype abcd.exe | kstrings > out.txt\n\n");
+#else
+        printf ("\tcat abcd.exe | kstrings > out.txt\n\n");
+#endif
+        printf ("\tkstrings malware.exe -json > strings.json\n");
+        printf ("Flags:\n");
+        printf (" -r\n\tRecursively process subdirectories.\n");
+        printf (" -f\n\tPrints the filename/processname for each string.\n");
+        printf (" -F\n\tPrints the full path and filename for each string.\n");
+        printf (" -s\n\tPrints the file offset or memory address span\n\tof each string.\n");
+        printf (" -t\n\tPrints the string type for each string. UTF8,\n\tor WIDE_STRING.\n");
+        printf (" -wide\n\tPrints only WIDE_STRING strings that are encoded\n\tas two bytes per "
+                "character.\n");
+        printf (" -utf\n\tPrints only UTF8 encoded strings.\n");
+        printf (" -a\n\tPrints both interesting and not interesting strings.\n\tDefault only "
+                "prints interesting non-junk strings.\n");
+        printf (" -ni\n\tPrints only not interesting strings. Default only\n\tprints interesting "
+                "non-junk strings.\n");
+        printf (" -e\n\tEscape new line characters.\n");
+        printf (" -l [numchars]\n\tMinimum number of characters that is a valid string.\n\tDefault "
+                "is 4.\n");
+        printf (" -b [start](:[end])\n\tScan only the specified byte range for strings.\n");
+        printf (" -pid [pid]\n\tThe strings from the process address space for the\n\tspecified "
+                "PID will be dumped. Use a '0x' prefix to\n\tspecify a hex PID. (Windows Only)\n");
+        printf (" -system\n\tDumps strings from all accessible processes on the\n\tsystem. This "
+                "takes awhile. (Windows Only)\n");
+        printf (" -json\n\tWrites output as json. Many flags are ignored in this mode.\n");
         return 0;
     }
 
-    kstrings::CStringParser* pParser = new kstrings::CStringParser( options );
+    kstrings::CStringParser *pParser = new kstrings::CStringParser (options);
 
-    if ( bFlagDumpPid || bFlagDumpSystem )
+    if (bFlagDumpPid || bFlagDumpSystem)
     {
-    #if KEN_PLATFORM_WINDOWS
-            // Existing Windows Logic
-        if ( IsWin64() && sizeof( void* ) == 4 )
+#if KEN_PLATFORM_WINDOWS
+        // Existing Windows Logic
+        if (IsWin64 () && sizeof (void *) == 4)
         {
-            std::cerr << "WARNING: Running 32-bit binary on 64-bit OS. Process dumping may fail." << std::endl;
+            std::cerr << "WARNING: Running 32-bit binary on 64-bit OS. Process dumping may fail."
+                      << std::endl;
         }
-        GetPrivileges( GetCurrentProcess() );
+        GetPrivileges (GetCurrentProcess ());
 
         // CMemoryStrings is Windows-specific
-        kstrings::CMemoryStrings* pProcess = new kstrings::CMemoryStrings( pParser );
+        kstrings::CMemoryStrings *pProcess = new kstrings::CMemoryStrings (pParser);
 
-        if ( bFlagDumpPid )
+        if (bFlagDumpPid)
         {
             try
             {
-                DWORD pid = std::stoul( szFilterArg );
-                pProcess->DumpProcess( pid );
+                DWORD pid = std::stoul (szFilterArg);
+                pProcess->DumpProcess (pid);
             }
-            catch ( ... )
+            catch (...)
             {
                 std::cerr << "Invalid PID specified." << std::endl;
             }
         }
-        else if ( bFlagDumpSystem )
+        else if (bFlagDumpSystem)
         {
-            pProcess->DumpSystem();
+            pProcess->DumpSystem ();
         }
         delete pProcess;
-    #else
-        std::cerr << "Error: Process dumping (-pid / -system) is currently only supported on Windows." << std::endl;
-    #endif
+#else
+        std::cerr
+            << "Error: Process dumping (-pid / -system) is currently only supported on Windows."
+            << std::endl;
+#endif
     }
-    else if ( bPipedInput )
+    else if (bPipedInput)
     {
-    #if KEN_PLATFORM_WINDOWS
-        _setmode( _fileno( stdin ), _O_BINARY );
-    #endif
-    // Use fdopen to get a FILE* from the stdin file descriptor
-    #if KEN_PLATFORM_WINDOWS
-        FILE* fh = _fdopen( _fileno( stdin ), "rb" );
-    #else
-        FILE* fh = fdopen( fileno( stdin ), "rb" );
-    #endif
-        if ( fh )
+#if KEN_PLATFORM_WINDOWS
+        _setmode (_fileno (stdin), _O_BINARY);
+#endif
+// Use fdopen to get a FILE* from the stdin file descriptor
+#if KEN_PLATFORM_WINDOWS
+        FILE *fh = _fdopen (_fileno (stdin), "rb");
+#else
+        FILE *fh = fdopen (fileno (stdin), "rb");
+#endif
+        if (fh)
         {
-            pParser->ParseStream( fh, "piped data", "piped data" );
-            fclose( fh );
+            pParser->ParseStream (fh, "piped data", "piped data");
+            fclose (fh);
         }
         else
         {
             std::cerr << "Error reading piped input." << std::endl;
         }
     }
-    else if ( !szFilterArg.empty() )
+    else if (!szFilterArg.empty ())
     {
         // Handle Paths vs Filters
-        std::filesystem::path p( szFilterArg );
+        std::filesystem::path p (szFilterArg);
 
-        if ( std::filesystem::exists( p ) )
+        if (std::filesystem::exists (p))
         {
             // It is a real path (file or dir)
-            ProcessPath( p, "", bFlagRecursive, pParser );
+            ProcessPath (p, "", bFlagRecursive, pParser);
         }
         else
         {
             // It might be a wildcard pattern like "*.exe" or "C:/bin/*.exe"
-            std::filesystem::path parent = p.parent_path();
-            if ( parent.empty() ) parent = ".";
+            std::filesystem::path parent = p.parent_path ();
+            if (parent.empty ())
+                parent = ".";
 
-            std::string szFilePattern = p.filename().string();
-            ProcessPath( parent, szFilePattern, bFlagRecursive, pParser );
+            std::string szFilePattern = p.filename ().string ();
+            ProcessPath (parent, szFilePattern, bFlagRecursive, pParser);
         }
     }
 

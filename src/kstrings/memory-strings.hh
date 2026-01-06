@@ -7,13 +7,13 @@
 #include "kstrings/core.hh"
 
 // kstrings headers
+#include "kstrings/basics.hh"
 #include "kstrings/module.hh"
 #include "kstrings/string-parser.hh"
-#include "kstrings/basics.hh"
 
-#include <vector>
-#include <string>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #if KEN_PLATFORM_WINDOWS
 
@@ -33,8 +33,8 @@ struct sMBIBasicInfo
 // Memory strings dumper class
 class CMemoryStrings
 {
-    std::vector<CModule> m_Modules;     // List of modules in the process
-    CStringParser* m_Parser;            // String parser instance
+    std::vector<CModule> m_Modules; // List of modules in the process
+    CStringParser* m_Parser;        // String parser instance
 
     // Generate the module list for the process
     void _GenerateModuleList(HANDLE powl);
@@ -42,6 +42,7 @@ class CMemoryStrings
     bool _ProcessAllMemory(HANDLE pHandle, std::string szProcessName);
     // Get basic MBI information for an address
     sMBIBasicInfo _GetMbiInfo(u64 iAddress, HANDLE pHandle);
+
 public:
     // Constructor
     CMemoryStrings(CStringParser* pParser);
