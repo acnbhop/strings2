@@ -4,8 +4,6 @@
 // Core header
 #include "kstrings/core.hh"
 
-#include "kstrings/string-model.hh"
-
 #include <string>
 #include <codecvt>
 #include <unordered_set>

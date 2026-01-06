@@ -90,3 +90,5 @@ using isize = std::ptrdiff_t;
 
 #define __NS_BEGIN_KSTRINGS      namespace kstrings {
 #define __NS_END_KSTRINGS        }
+
+#include "kstrings/globals.hh"

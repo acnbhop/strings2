@@ -58,7 +58,7 @@ f32 CExtractedString::GetProbaInteresting()
     // 	1 for the total number of characters in string
     // 	1 for the total number of > 0x128 ascii code
     //  1 for distinct character count
-    f32 score = string_model::bias;
+    f32 score = string_model::fBias;
     std::unordered_set<wchar_t> CharacterCounts; // Character counts 
     for (size_t i = 0; i < l; i++)
     {
@@ -67,26 +67,26 @@ f32 CExtractedString::GetProbaInteresting()
         if (m_String[i] >= 0x9 && m_String[i] <= 0x7E)
         {
             // Unigram
-            score += string_model::weights[m_String[i] - 0x9];
+            score += string_model::fWeights[m_String[i] - 0x9];
 
             // Bigram
             if (i + 1 < l && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E)
             {
-                score += string_model::weights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
+                score += string_model::fWeights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
             }
         }
         else
         {
             // Number of non-latin unicode characters
-            score += string_model::weights[118 + 118 + 118 * 118 + 1];
+            score += string_model::fWeights[118 + 118 + 118 * 118 + 1];
         }
     }
 
     // Add the string length weight
-    score += string_model::weights[118 + 118 + 118 * 118] * (float)l;
+    score += string_model::fWeights[118 + 118 + 118 * 118] * (float)l;
 
     // Add the distinct character count weight
-    score += string_model::weights[118 + 118 + 118 * 118 + 2] * (float)CharacterCounts.size();
+    score += string_model::fWeights[118 + 118 + 118 * 118 + 2] * (float)CharacterCounts.size();
 
     // Convert it to a probability
     return 1.0f / (1.0f + exp(-score));

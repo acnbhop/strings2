@@ -17,7 +17,7 @@ usize try_utf8_char_step(const unsigned char* buffer, usize buffer_size, isize o
 
     if (first_byte < 0x80)
     {
-        if (is_displayable_ascii[first_byte])
+        if (IsDisplayableASCII[first_byte])
             return 1;
         return 0;
     }
@@ -43,7 +43,7 @@ usize try_utf8_char_step(const unsigned char* buffer, usize buffer_size, isize o
         c |= (buffer[offset + 1] & 0x3F);
 
         // Require the character to be seen at least once in commoncrawl web scape
-        if (is_seen_commoncrawl.find(c) == is_seen_commoncrawl.end())
+        if (IsSeenCommonCrawl.find(c) == IsSeenCommonCrawl.end())
             return 0; // Invalid unicode character
 
         return 2;
@@ -82,7 +82,7 @@ usize try_utf8_char_step(const unsigned char* buffer, usize buffer_size, isize o
         }
 
         // Require the character to be seen at least once in commoncrawl web scape
-        if (is_seen_commoncrawl.find(c) == is_seen_commoncrawl.end())
+        if (IsSeenCommonCrawl.find(c) == IsSeenCommonCrawl.end())
             return 0; // Invalid unicode character
 
         return 3;
@@ -97,11 +97,11 @@ int get_language_group(wchar_t c)
 {
     // Returns the language group of a unicode wchar.
     // Return value of 0x0 denotes an invalid language group, and 0x1 denotes Latin.
-    return bmp_12bits_to_group[c >> 4]; // Leading 12 bits identify the language group
+    return BMP12BitsToGroup[c >> 4]; // Leading 12 bits identify the language group
 }
 
 // Note: Buffer overrun security checks disabled, since they added ~50% overhead.
-__declspec(safebuffers) extracted_string* try_extract_string(const unsigned char* buffer, 
+__declspec(safebuffers) CExtractedString* TryExtractString(const unsigned char* buffer, 
     usize buffer_size, isize offset, usize min_chars)
 {
     // Try extracting the string as either utf8 or unicode wchar format. 
@@ -129,7 +129,7 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
         if (char_count >= min_chars)
         {
             // Return the extracted string
-            return new extracted_string(
+            return new CExtractedString(
                 (char*)(buffer + offset), i - offset, TYPE_UTF8, offset, i - 1
             );
         }
@@ -157,7 +157,7 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
         if (c < 0x100)
         {
             // Basic Latin, require it to be displayable ascii if in this range
-            if (!is_displayable_ascii[c])
+            if (!IsDisplayableASCII[c])
                 break;
         }
         else
@@ -165,7 +165,7 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
             // Non-basic Latin
 
             // Require the character to be seen at least once in commoncrawl web scape
-            if (is_seen_commoncrawl.find(c) == is_seen_commoncrawl.end())
+            if (IsSeenCommonCrawl.find(c) == IsSeenCommonCrawl.end())
                 break; // Invalid unicode character
 
             // Require it to be in the same character language group of what's already identified
@@ -188,7 +188,7 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
     if (char_count >= min_chars)
     {
         // Return the extracted string
-        return new extracted_string(
+        return new CExtractedString(
             (wchar_t*)(buffer + offset), i - offset, TYPE_WIDE_STRING, offset, i - 2
         );
     }
@@ -201,18 +201,17 @@ try_extract_string_tuple(const unsigned char* buffer, usize buffer_size, isize o
     usize min_chars, bool only_interesting)
 {
     // Simple wrapper to return a tuple instead
-    extracted_string* s = try_extract_string(buffer, buffer_size, offset, min_chars);
+    CExtractedString* s = TryExtractString(buffer, buffer_size, offset, min_chars);
     if (s != NULL)
     {
-        bool is_interesting = s->is_interesting();
-
+        bool is_interesting = s->IsInteresting();
         if (!only_interesting || is_interesting)
         {
             // Create a tuple to return
             auto result = std::make_tuple(
-                s->get_string(),
-                s->get_type_string(),
-                std::pair<int, int>(s->get_offset_start(), s->get_offset_end()),
+                s->GetString(),
+                s->GetTypeString(),
+                std::pair<int, int>(s->GetOffsetStart(), s->GetOffsetEnd()),
                 is_interesting
             );
 
@@ -235,25 +234,24 @@ extract_all_strings(const unsigned char buffer[], usize buffer_size, usize min_c
     std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect;
     std::vector<float> proba_interesting_vect;
     std::vector<float> proba_interesting_avg_vect;
-    extracted_string* s;
+    CExtractedString* s;
 
     float last_proba_interestings[WINDOW_SIZE] = { 0.0f };
 
     while (offset + min_chars <= buffer_size)
     {
         // Process this offset
-        s = try_extract_string((unsigned char*)buffer, buffer_size, offset, min_chars);
+        s = TryExtractString((unsigned char*)buffer, buffer_size, offset, min_chars);
 
         if (s)
         {
-            f32 proba_interesting = s->get_proba_interesting();
-
+            f32 proba_interesting = s->GetProbaInteresting();
             // Add the new string
             r_vect.push_back(
                 std::tuple<std::string, std::string, std::pair<int, int>, bool>(
-                    s->get_string(),
-                    s->get_type_string(),
-                    std::pair<int, int>(s->get_offset_start(), s->get_offset_end()),
+                    s->GetString(),
+                    s->GetTypeString(),
+                    std::pair<int, int>(s->GetOffsetStart(), s->GetOffsetEnd()),
                     proba_interesting > 0.5
                     )
             );
@@ -276,7 +274,7 @@ extract_all_strings(const unsigned char buffer[], usize buffer_size, usize min_c
             proba_interesting_vect.push_back(proba_interesting);
 
             // Advance by the byte-length of the string
-            offset += (long)s->get_size_in_bytes();
+            offset += (long)s->GetSizeInBytes();
 
             // Cleanup
             delete s;
