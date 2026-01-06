@@ -1,11 +1,16 @@
 #
 # CMakeLists.txt
-#   Primary CMake configuration for kstrings
+#       Primary CMake configuration for kstrings
 #
 
 # Setup the project
 cmake_minimum_required(VERSION 3.10)
 project(kstrings VERSION 1.0 LANGUAGES C CXX)
+
+# Global CMake modules
+include(CheckCSourceCompiles)
+include(ProcessorCount)
+include(FetchContent)
 
 # The root directory of the project
 set(KEN_ROOT ${CMAKE_SOURCE_DIR})

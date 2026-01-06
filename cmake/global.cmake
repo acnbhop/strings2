@@ -151,14 +151,12 @@ endif()
 #===-------------------------------------===
 # SIMDs
 #===-------------------------------------===
-include(CheckCSourceCompiles)
 
 # TODO: SIMDs
 
 #===-------------------------------------===
 # Multi Processor Configuration
 #===-------------------------------------===
-include(ProcessorCount)
 ProcessorCount(KEN_NUM_OF_PROCESSORS)
 
 # Turn on multi processor compilation
