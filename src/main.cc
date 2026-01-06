@@ -231,20 +231,20 @@ int main( int argc, char* argv[] )
 
     if ( bFlagHelp )
     {
-        printf( "Strings2 extracts all unicode/ascii strings from binary data. On top of the classical strings approach, this version decodes multilingual strings (eg Chinese, Russian, etc) and uses a ML model to suppress noisy uninteresting strings.\n\n" );
+        printf( "kstrings extracts all unicode/ascii strings from binary data. On top of the classical strings approach, this version decodes multilingual strings (eg Chinese, Russian, etc) and uses a ML model to suppress noisy uninteresting strings.\n\n" );
         printf( "Example Usage:\n" );
-        printf( "\tstrings2 malware.exe\n" );
-        printf( "\tstrings2 *.exe > strings.txt\n" );
-        printf( "\tstrings2 ./files/*.exe > strings.txt\n" );
-        printf( "\tstrings2 -pid 419 > process_strings.txt\n" );
-        printf( "\tstrings2 -f -s -pid 0x1a3 > process_strings.txt\n" );
-        printf( "\tstrings2 -system > all_process_strings.txt\n" );
+        printf( "\tkstrings malware.exe\n" );
+        printf( "\tkstrings *.exe > strings.txt\n" );
+        printf( "\tkstrings ./files/*.exe > strings.txt\n" );
+        printf( "\tkstrings -pid 419 > process_strings.txt\n" );
+        printf( "\tkstrings -f -s -pid 0x1a3 > process_strings.txt\n" );
+        printf( "\tkstrings -system > all_process_strings.txt\n" );
     #if KEN_PLATFORM_WINDOWS
-        printf( "\ttype abcd.exe | strings2 > out.txt\n\n" );
+        printf( "\ttype abcd.exe | kstrings > out.txt\n\n" );
     #else
-        printf( "\tcat abcd.exe | strings2 > out.txt\n\n" );
+        printf( "\tcat abcd.exe | kstrings > out.txt\n\n" );
     #endif
-        printf( "\tstrings2 malware.exe -json > strings.json\n" );
+        printf( "\tkstrings malware.exe -json > strings.json\n" );
         printf( "Flags:\n" );
         printf( " -r\n\tRecursively process subdirectories.\n" );
         printf( " -f\n\tPrints the filename/processname for each string.\n" );
