@@ -45,13 +45,16 @@
 #define KEN_PLATFORM_DARWIN 0
 #endif
 
+// Silence C++17 deprecation for codecvt
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
 #if KEN_PLATFORM_WINDOWS
+#define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib, "Shlwapi.lib")
 #include <Windows.h>
 #include <tlhelp32.h>
 #include <Psapi.h>
 #include <errno.h>
-
 #pragma comment(lib, "Psapi.lib")
 #endif
 

@@ -16,15 +16,15 @@ class CPrintBuffer
     s32 m_iSpaceUsed;
     char* m_pBuffer;
 public:
-    void AddString(const char* string, size_t length);
-    void AddString(const char* string);
-    void AddString(std::string string);
+    void AddString( const char* string, size_t length );
+    void AddString( const char* string );
+    void AddString( std::string string );
 
-    void AddJsonString(std::string json);
+    void AddJsonString( std::string json );
     void Digest();
-    
-    CPrintBuffer(s32 buffer_size);
-    ~CPrintBuffer(void);
+
+    CPrintBuffer( s32 buffer_size );
+    ~CPrintBuffer( void );
 };
 
 __NS_END_KSTRINGS

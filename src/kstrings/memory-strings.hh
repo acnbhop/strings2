@@ -8,11 +8,11 @@
 #include "kstrings/string-parser.hh"
 #include "kstrings/basics.hh"
 
-#include "windows.h"
-
 #include <vector>
 #include <string>
 #include <sstream>
+
+#if KEN_PLATFORM_WINDOWS
 
 __NS_BEGIN_KSTRINGS
 
@@ -43,3 +43,5 @@ public:
 };
 
 __NS_END_KSTRINGS
+
+#endif // KEN_PLATFORM_WINDOWS

@@ -4,34 +4,40 @@
 // File header
 #include "kstrings/module.hh"
 
+#if KEN_PLATFORM_WINDOWS
+
+#include <filesystem>
+
 __NS_BEGIN_KSTRINGS
 
-bool CModule::Contains(PVOID64 address)
+bool CModule::Contains(u64 address) const
 {
     // Check if this module contains the specified address
-    return (BYTE*) address >= m_ModuleDetails.modBaseAddr && (BYTE*) address < m_ModuleDetails.modBaseAddr + m_ModuleDetails.modBaseSize;
+    // Convert pointers to u64 for safe comparison
+    u64 base = (u64)m_ModuleDetails.modBaseAddr;
+    u64 size = (u64)m_ModuleDetails.modBaseSize;
+    
+    return (address >= base) && (address < base + size);
 }
 
-std::string CModule::GetFilepath()
+std::string CModule::GetFilepath() const
 {
-    std::wstring ws = m_ModuleDetails.szExePath;
-
-    using convert_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<convert_type, wchar_t> converter;
-
-    //use converter (.to_bytes: wstr->str, .from_bytes: str->wstr)
-    return converter.to_bytes(ws);
+    // Use std::filesystem for robust Wide -> UTF8 string conversion
+    // This avoids std::codecvt deprecation warnings
+    try {
+        return std::filesystem::path(m_ModuleDetails.szExePath).string();
+    } catch (...) {
+        return "";
+    }
 }
 
-std::string CModule::GetFilename()
+std::string CModule::GetFilename() const
 {
-    std::wstring ws = m_ModuleDetails.szModule;
-
-    using convert_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<convert_type, wchar_t> converter;
-
-    //use converter (.to_bytes: wstr->str, .from_bytes: str->wstr)
-    return converter.to_bytes(ws);
+    try {
+        return std::filesystem::path(m_ModuleDetails.szModule).string();
+    } catch (...) {
+        return "";
+    }
 }
 
 bool CModule::operator== (const CModule &other) const
@@ -49,3 +55,5 @@ CModule::~CModule(void)
 }
 
 __NS_END_KSTRINGS
+
+#endif // KEN_PLATFORM_WINDOWS

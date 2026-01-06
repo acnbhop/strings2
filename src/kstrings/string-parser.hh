@@ -40,25 +40,25 @@ class CStringParser
     // Maybe add XOR methods for extracting strings?
     enum eExtractType
     {
-      EXTRACT_RAW,
-      EXTRACT_ASM
+        EXTRACT_RAW,
+        EXTRACT_ASM
     };
 
     enum eStringType
     {
-      TYPE_UNDETERMINED,
-      TYPE_ASCII,
-      TYPE_UNICODE
+        TYPE_UNDETERMINED,
+        TYPE_ASCII,
+        TYPE_UNICODE
     };
-    
+
     sStringOptions m_Options;
     CPrintBuffer* m_Printer;
-    
+
 public:
     CStringParser( sStringOptions options );
-    bool ParseBlock( unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address);
-    bool ParseStream( FILE* fh, std::string name_short, std::string name_long);
-    ~CStringParser(void);
+    bool ParseBlock( unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address );
+    bool ParseStream( FILE* fh, std::string name_short, std::string name_long );
+    ~CStringParser( void );
 };
 
 __NS_END_KSTRINGS

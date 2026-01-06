@@ -6,4 +6,10 @@
 // Standard headers
 #include <string>
 
-void PrintLastError(const std::string& msg);
+__NS_BEGIN_KSTRINGS
+
+// Windows: Prints GetLastError() and FormatMessage
+// Linux/Mac: Prints errno and strerror()
+void PrintLastError( const std::string& msg );
+
+__NS_END_KSTRINGS

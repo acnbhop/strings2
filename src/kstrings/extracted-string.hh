@@ -27,10 +27,10 @@ private:
     s32 m_OffsetEnd;
 public:
     CExtractedString();
-    CExtractedString(const char* string, usize size_in_bytes, eStringType type, 
-        s32 offset_start, s32 offset_end);
-    CExtractedString(const wchar_t* string, usize size_in_bytes, eStringType type, 
-        s32 offset_start, s32 offset_end);
+    CExtractedString( const char* string, usize size_in_bytes, eStringType type,
+                      s32 offset_start, s32 offset_end );
+    CExtractedString( const wchar_t* string, usize size_in_bytes, eStringType type,
+                      s32 offset_start, s32 offset_end );
 
     f32 GetProbaInteresting();
     usize GetSizeInBytes();

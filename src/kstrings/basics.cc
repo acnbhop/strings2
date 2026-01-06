@@ -4,33 +4,57 @@
 // File header
 #include "kstrings/basics.hh"
 
-void PrintLastError(LPTSTR lpszFunction)
+#if !KEN_PLATFORM_WINDOWS
+#include <cerrno>
+#endif
+
+__NS_BEGIN_KSTRINGS
+
+void PrintLastError( const std::string& msg )
 {
+#if KEN_PLATFORM_WINDOWS
+    // --- Windows Implementation ---
+
     // Retrieve the system error message for the last-error code
     LPVOID lpMsgBuf;
-    LPVOID lpDisplayBuf;
-    DWORD dw = GetLastError(); 
+    DWORD dw = GetLastError();
 
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+    // Use FormatMessageA (ANSI) to play nice with std::string and UTF-8
+    FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR) &lpMsgBuf,
+        MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+        (LPSTR) &lpMsgBuf,
         0, NULL );
 
-    // Display the error message and exit the process
-    lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-        (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR)); 
-    StringCchPrintf((LPTSTR)lpDisplayBuf, 
-        LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        TEXT("%s failed with error %d: %s"), 
-        lpszFunction, dw, lpMsgBuf); 
+    if ( lpMsgBuf )
+    {
+        // Strip newlines that FormatMessage adds
+        std::string sysMsg = (char*) lpMsgBuf;
+        if ( !sysMsg.empty() && sysMsg.back() == '\n' ) sysMsg.pop_back();
+        if ( !sysMsg.empty() && sysMsg.back() == '\r' ) sysMsg.pop_back();
 
-    fwprintf(stderr,(LPCTSTR) lpDisplayBuf );
+        std::cerr << msg << " failed with error " << dw << ": " << sysMsg << std::endl;
 
-    LocalFree(lpMsgBuf);
-    LocalFree(lpDisplayBuf);
+        LocalFree( lpMsgBuf );
+    }
+    else
+    {
+        std::cerr << msg << " failed with error " << dw << " (No system message found)" << std::endl;
+    }
+
+#else
+    // --- Linux / macOS / BSD Implementation ---
+
+    // Use standard errno
+    // copy errno locally in case streaming to cerr resets it (unlikely but safe)
+    int err = errno;
+    std::cerr << msg << " failed: " << std::strerror( err ) << " (" << err << ")" << std::endl;
+
+#endif
 }
+
+__NS_END_KSTRINGS
