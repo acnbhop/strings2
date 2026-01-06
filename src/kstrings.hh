@@ -10,3 +10,4 @@
 #include "kstrings/module.hh"
 #include "kstrings/print-buffer.hh"
 #include "kstrings/string-parser.hh"
+#include "kstrings/utility.hh"

@@ -21,6 +21,8 @@ add_library(kstringslib STATIC
     src/kstrings/print-buffer.hh
     src/kstrings/string-parser.cc
     src/kstrings/string-parser.hh
+    src/kstrings/utility.cc
+    src/kstrings/utility.hh
 )
 
 # Set the project name for configuration to apply the settings
