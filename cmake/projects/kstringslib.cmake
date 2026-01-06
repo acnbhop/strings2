@@ -29,5 +29,5 @@ add_library(kstringslib STATIC
 set(KEN_PROJECT_NAME kstringslib)
 
 # Apply configuration settings
-include(cmake/globalcore.cmake)
-include(cmake/config.cmake)
+include(${KEN_ROOT}/cmake/globalcore.cmake)
+include(${KEN_ROOT}/cmake/config.cmake)

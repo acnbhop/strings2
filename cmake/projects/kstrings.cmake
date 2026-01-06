@@ -14,5 +14,5 @@ target_link_libraries(kstrings PRIVATE kstringslib)
 set(KEN_PROJECT_NAME kstrings)
 
 # Apply configuration settings
-include(cmake/globalcore.cmake)
-include(cmake/config.cmake)
+include(${KEN_ROOT}/cmake/globalcore.cmake)
+include(${KEN_ROOT}/cmake/config.cmake)
