@@ -1,3 +1,9 @@
+#===---------------------------------------------------------------------------------------------===
+# kstrings.cmake
+#===---------------------------------------------------------------------------------------------===
+# Setup for kstrings.
+#===---------------------------------------------------------------------------------------------===
+
 # Set the project name for configuration to apply the settings
 set(KEN_PROJECT_NAME kstrings)
 
@@ -32,7 +38,7 @@ add_executable(kstrings
 )
 
 # Global configuration
-include(${PROJ_ROOT}/cmake/shared/config.cmake)
+include(${KEN_PROJ_ROOT}/cmake/shared/config.cmake)
 
 #===-------------------------------------===
 # Core Definitions

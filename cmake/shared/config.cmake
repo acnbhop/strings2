@@ -1,3 +1,8 @@
+#===---------------------------------------------------------------------------------------------===
+# shared/config.cmake
+#===---------------------------------------------------------------------------------------------===
+# Shared configuration across all projects
+#===---------------------------------------------------------------------------------------------===
 if(KEN_PROJECT_NAME STREQUAL "")
     status(FATAL_ERROR "Cannot use this file without not specifying a project name!")
 else()
