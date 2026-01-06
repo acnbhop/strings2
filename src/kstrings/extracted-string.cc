@@ -16,10 +16,20 @@ NAMESPACE_BEGIN_KSTRINGS
     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
+// apple-clang-disable: -Wdeprecated-declarations
+#if KEN_COMPILER_APPLE_CLANG
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
 
 #if KEN_COMPILER_GCC
     #pragma GCC diagnostic pop
+#endif
+
+#if KEN_COMPILER_APPLE_CLANG
+    #pragma clang diagnostic pop
 #endif
 
 CExtractedString::CExtractedString()
@@ -60,7 +70,7 @@ f32 CExtractedString::GetProbaInteresting()
 
     // The model is trained to only support strings of length 4 to 7. Longer
     // strings are asssumed to be interesting, shorter assumed gibberish..
-    s32 iLength = (int) m_String.length();
+    usize iLength = (int) m_String.length();
     if ( iLength > 16 )
         return 1.0f;
     if ( iLength < 4 )
