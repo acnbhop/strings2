@@ -11,11 +11,31 @@ if (NOT DEFINED UNICODE)
     target_compile_definitions(${AAO_PROJECT_NAME} PRIVATE UNICODE _UNICODE)
 endif()
 
+# Get how many processors are available
+include(ProcessorCount)
+ProcessorCount(NUMBER_OF_PROCESSORS_AVAILABLE)
+
+# See if we are clang-cl
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND MSVC)
+    set(IS_CLANG_CL TRUE)
+else()
+    set(IS_CLANG_CL FALSE)
+endif()
+
+
 # Turn on multi processor compilation
-if (MSVC)
+if (MSVC AND NOT IS_CLANG_CL)
     target_compile_options(${AAO_PROJECT_NAME} PRIVATE /MP)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${AAO_PROJECT_NAME} PRIVATE -j)
+else()
+    # Set makefile generator flags for parallel builds
+    #
+    # Make, Ninja, and others support the -j flag to specify
+    # the number of parallel jobs to use.
+    if (CMAKE_GENERATOR MATCHES "Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja")
+        if (NUMBER_OF_PROCESSORS_AVAILABLE GREATER 1)
+            set(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${NUMBER_OF_PROCESSORS_AVAILABLE}")
+        endif()
+    endif()
 endif()
 
 # Make sure application on MSVC is a "console" application.
@@ -66,6 +86,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE /RTC1)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
+        target_link_options(${AAO_PROJECT_NAME} PRIVATE -fsanitize=address -fsanitize=undefined)
     endif()
 endif()
 
