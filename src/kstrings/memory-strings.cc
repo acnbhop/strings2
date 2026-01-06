@@ -14,6 +14,8 @@
 
 NAMESPACE_BEGIN_KSTRINGS
 
+// TODO: ???
+#if 0
 // Local helper for this translation unit
 static bool LocalIsWin64( HANDLE process )
 {
@@ -25,6 +27,7 @@ static bool LocalIsWin64( HANDLE process )
     PrintLastError( "IsWow64Process" );
     return false;
 }
+#endif
 
 CMemoryStrings::CMemoryStrings( CStringParser* pParser )
 {
@@ -88,14 +91,14 @@ bool CMemoryStrings::DumpProcess( DWORD iPID )
         }
         else
         {
-            fprintf( stderr, "Failed to gather module information for process 0x%x (%lu). ", iPID, iPID );
+            fprintf( stderr, "Failed to gather module information for process 0x%x (%lu). ", (u32)iPID, iPID );
             PrintLastError( "DumpProcess (CreateToolhelp32Snapshot)" );
         }
         CloseHandle( pHandle );
     }
     else
     {
-        fprintf( stderr, "Failed to open process 0x%x (%lu). ", iPID, iPID );
+        fprintf( stderr, "Failed to open process 0x%x (%lu). ", (u32)iPID, iPID );
         PrintLastError( "DumpProcess (OpenProcess)" );
     }
     return false;

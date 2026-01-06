@@ -120,7 +120,7 @@ s32 GetLanguageGroup( wchar_t c )
     return BMP12BitsToGroup[c >> 4]; // Leading 12 bits identify the language group
 }
 
-#if KEN_PLATFORM_WINDOWS
+#if KEN_PLATFORM_WINDOWS && !KEN_COMPILER_GCC
 __declspec(safebuffers)
 #endif
 CExtractedString* TryExtractString( const u8* pBuffer,
@@ -306,6 +306,13 @@ ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
 
     // Have a pass through the strings averaging the interestingness and filtering
     std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>> r_vect_filt;
+
+    // gcc-disable: -Wsign-compare
+    #if KEN_COMPILER_GCC
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wsign-compare"
+    #endif
+
     for ( int i = 0; i < r_vect.size(); i++ )
     {
         // Get the interestingness
@@ -316,6 +323,11 @@ ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
 
         if ( i + WINDOW_SIZE < proba_interesting_avg_vect.size() )
         {
+
+        #if KEN_COMPILER_GCC
+            #pragma GCC diagnostic pop
+        #endif
+
             if ( proba_interesting_avg_vect[i + WINDOW_SIZE] > proba_interesting_avg )
                 proba_interesting_avg = proba_interesting_avg_vect[i + WINDOW_SIZE];
         }

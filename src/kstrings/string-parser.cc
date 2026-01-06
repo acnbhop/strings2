@@ -28,6 +28,13 @@ bool CStringParser::ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNa
             nlohmann::json Json;
             Json["name_short"] = szNameShort;
             Json["name_long"] = szNameLong;
+            
+            // gcc-disable: -Wsign-compare
+            #if KEN_COMPILER_GCC
+                #pragma GCC diagnostic push
+                #pragma GCC diagnostic ignored "-Wsign-compare"
+            #endif
+
             for ( int i = 0; i < r_vect.size(); i++ )
             {
                 Json["strings"][i]["string"] = std::get<0>( r_vect[i] );
@@ -43,10 +50,25 @@ bool CStringParser::ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNa
             // Iterate through the resulting strings, printing them
             for ( int i = 0; i < r_vect.size(); i++ )
             {
+
+                #if KEN_COMPILER_GCC
+                    #pragma GCC diagnostic pop
+                #endif
+
+                #if KEN_COMPILER_GCC
+                    #pragma GCC diagnostic push
+                    #pragma GCC diagnostic ignored "-Wparentheses"
+                #endif
+
                 bool is_interesting = std::get<3>( r_vect[i] );
                 if ( is_interesting && m_Options.bPrintInteresting ||
                      !is_interesting && m_Options.bPrintNotInteresting )
                 {
+
+                    #if KEN_COMPILER_GCC
+                        #pragma GCC diagnostic pop
+                    #endif
+
                     // Add the prefixes as appropriate
                     if ( m_Options.bPrintFilepath )
                         this->m_Printer->AddString( szNameLong + "," );
@@ -134,7 +156,7 @@ bool CStringParser::ParseStream( FILE* pFileHandle, std::string szNameShort, std
             // Read the stream in blocks of 0x50000, assuming that a string does not border the regions.
             if ( m_Options.iOffsetEnd > 0 )
             {
-                iNumRead = (s32) fread( pBuffer, 1, min( (usize) iBlockSize, (usize) (m_Options.iOffsetEnd - m_Options.iOffsetStart) ), pFileHandle );
+                iNumRead = (s32) fread( pBuffer, 1, kstrings::min( (usize) iBlockSize, (usize) (m_Options.iOffsetEnd - m_Options.iOffsetStart) ), pFileHandle );
             }
             else
             {

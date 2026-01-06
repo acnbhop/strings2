@@ -10,7 +10,17 @@
 
 NAMESPACE_BEGIN_KSTRINGS
 
+// gcc-disable: -Wdeprecated-declarations
+#if KEN_COMPILER_GCC
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
+
+#if KEN_COMPILER_GCC
+    #pragma GCC diagnostic pop
+#endif
 
 CExtractedString::CExtractedString()
 {
@@ -64,6 +74,13 @@ f32 CExtractedString::GetProbaInteresting()
     //  1 for distinct character count
     f32 fScore = (f32) string_model::fBias;
     std::unordered_set<wchar_t> CharacterCounts; // Character counts 
+
+    // gcc-disable: -Wsign-compare
+    #if KEN_COMPILER_GCC
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wsign-compare"
+    #endif
+
     for ( usize i = 0; i < iLength; i++ )
     {
         // Count distinct characters
@@ -76,6 +93,11 @@ f32 CExtractedString::GetProbaInteresting()
             // Bigram
             if ( i + 1 < iLength && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E )
             {
+
+            #if KEN_COMPILER_GCC
+                #pragma GCC diagnostic pop
+            #endif
+
                 fScore += (f32) string_model::fWeights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
             }
         }
@@ -93,7 +115,7 @@ f32 CExtractedString::GetProbaInteresting()
     fScore += (f32) string_model::fWeights[118 + 118 + 118 * 118 + 2] * (float) CharacterCounts.size();
 
     // Convert it to a probability
-    return 1.0f / (1.0f + exp( -fScore ));
+    return 1.0f / (1.0f + kstrings::exp( -fScore ));
 }
 
 usize CExtractedString::GetSizeInBytes()

@@ -11,6 +11,12 @@
 
 NAMESPACE_BEGIN_KSTRINGS
 
+// gcc-disable: -Wunused-variable
+#if KEN_COMPILER_GCC
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 // Quick way of checking if a character value is displayable ascii
 static bool IsDisplayableASCII[0x100] =
     /*          0     1     2     3        4     5     6     7        8     9     A     B        C     D     E     F     */
@@ -648,5 +654,9 @@ constexpr f64 fWeights[118 + 118 + 118 * 118 + 1 + 1 + 1] = {
     1.354652, -1.040197, 0.750901, -0.826785, -0.780581, 0.085200, -0.040867, 0.000000, 0.000000, -0.483433, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
     0.000000, 0.000000, 0.000000 };
 } // namespace kstrings::string_model
+
+#if KEN_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
 NAMESPACE_END_KSTRINGS
