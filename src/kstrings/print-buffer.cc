@@ -8,7 +8,7 @@
 // File header
 #include "kstrings/print-buffer.hh"
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 CPrintBuffer::CPrintBuffer( s32 buffer_size )
 {
@@ -84,4 +84,4 @@ CPrintBuffer::~CPrintBuffer( void )
     delete[] m_pBuffer;
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

@@ -8,7 +8,7 @@
 
 #if KEN_PLATFORM_WINDOWS
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 class CModule
 {
@@ -31,6 +31,6 @@ public:
     bool operator== (const CModule &other) const;
 };
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS
 
 #endif // KEN_PLATFORM_WINDOWS

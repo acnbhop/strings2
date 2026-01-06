@@ -12,7 +12,7 @@
 #include <cerrno>
 #endif
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 void PrintLastError( const std::string& szMsg )
 {
@@ -59,4 +59,4 @@ void PrintLastError( const std::string& szMsg )
 #endif
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

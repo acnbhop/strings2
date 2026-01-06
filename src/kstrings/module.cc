@@ -12,7 +12,7 @@
 
 #include <filesystem>
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 bool CModule::Contains(u64 address) const
 {
@@ -58,6 +58,6 @@ CModule::~CModule(void)
 {
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS
 
 #endif // KEN_PLATFORM_WINDOWS

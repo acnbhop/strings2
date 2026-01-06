@@ -10,7 +10,7 @@
 #include <codecvt>
 #include <unordered_set>
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 // String types
 enum class eStringType
@@ -52,4 +52,4 @@ public:
     ~CExtractedString();
 };
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

@@ -11,7 +11,7 @@
 // kstrings headers
 #include "kstrings/binary2strings.hh"
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 bool CStringParser::ParseBlock( unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address )
 {
@@ -174,4 +174,4 @@ CStringParser::~CStringParser( void )
     delete m_Printer;
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

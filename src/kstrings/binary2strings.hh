@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 #define WINDOW_SIZE 11
 
@@ -39,4 +39,4 @@ std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>>
 ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
                    bool bOnlyInteresting );
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

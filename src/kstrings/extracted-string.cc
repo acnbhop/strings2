@@ -8,7 +8,7 @@
 // File header
 #include "kstrings/extracted-string.hh"
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
 
@@ -147,4 +147,4 @@ CExtractedString::~CExtractedString()
     // Nothing to do
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

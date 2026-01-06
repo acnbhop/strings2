@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string>
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 class CPrintBuffer
 {
@@ -37,4 +37,4 @@ public:
     ~CPrintBuffer( void );
 };
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

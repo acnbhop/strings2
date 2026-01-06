@@ -17,7 +17,7 @@
 
 #if KEN_PLATFORM_WINDOWS
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 // Structure that holds basic MBI information
 struct sMBIBasicInfo
@@ -54,6 +54,6 @@ public:
     ~CMemoryStrings(void);
 };
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS
 
 #endif // KEN_PLATFORM_WINDOWS

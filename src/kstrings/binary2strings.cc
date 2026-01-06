@@ -8,7 +8,7 @@
 // File header
 #include "kstrings/binary2strings.hh"
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 usize TryUTF8CharStep( const u8* pBuffer, usize iBufferSize, isize iOffset )
 {
@@ -336,4 +336,4 @@ ExtractAllStrings( const u8 pBuffer[], usize iBufferSize, usize iMinChars,
     return r_vect_filt;
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS

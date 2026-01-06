@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 // Local helper for this translation unit
 static bool LocalIsWin64( HANDLE process )
@@ -230,6 +230,6 @@ void CMemoryStrings::_GenerateModuleList( HANDLE hSnapshot )
     }
 }
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS
 
 #endif // KEN_PLATFORM_WINDOWS

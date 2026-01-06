@@ -16,13 +16,13 @@
 // External headers
 #include "extern/json.hpp"
 
-__NS_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_KSTRINGS
 
 // The maximum string size
-constexpr auto iMaxStringSize = 0x2000;
+constexpr s32 iMaxStringSize = 0x2000;
 // The block size to read from files,
 // this is around 50 MB.
-constexpr auto iBlockSize = 5e+7;
+constexpr f64 iBlockSize = 5e+7;
 
 struct sStringOptions
 {
@@ -71,4 +71,4 @@ public:
     ~CStringParser( void );
 };
 
-__NS_END_KSTRINGS
+NAMESPACE_END_KSTRINGS
