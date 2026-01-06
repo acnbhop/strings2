@@ -10,57 +10,57 @@
 
 NAMESPACE_BEGIN_KSTRINGS
 
-CPrintBuffer::CPrintBuffer( s32 buffer_size )
+CPrintBuffer::CPrintBuffer( s32 iBufferSize )
 {
-    this->m_iBufferSize = buffer_size;
-    this->m_pBuffer = new char[buffer_size];
+    this->m_iBufferSize = iBufferSize;
+    this->m_pBuffer = new char[iBufferSize];
     this->m_iSpaceUsed = 0;
 }
 
-void CPrintBuffer::AddString( const char* string, size_t length )
+void CPrintBuffer::AddString( const char* szString, usize iLength )
 {
     // Digest the buffer if it is full
-    if ( m_iSpaceUsed + (s32) length + 1 >= m_iBufferSize )
+    if ( m_iSpaceUsed + (s32) iLength + 1 >= m_iBufferSize )
         Digest();
     // Copy the string if there is room
-    if ( m_iSpaceUsed + (s32) length + 1 >= m_iBufferSize )
+    if ( m_iSpaceUsed + (s32) iLength + 1 >= m_iBufferSize )
     {
         // Digest this string without buffering it
-        fwrite( string, length, 1, stdout );
+        fwrite( szString, iLength, 1, stdout );
     }
     else
     {
         // Add it to the buffer
-        memcpy( m_pBuffer + m_iSpaceUsed, string, length );
-        m_iSpaceUsed += (s32) length;
+        memcpy( m_pBuffer + m_iSpaceUsed, szString, iLength );
+        m_iSpaceUsed += (s32) iLength;
         m_pBuffer[m_iSpaceUsed] = 0;
     }
 }
 
-void CPrintBuffer::AddString( const char* string )
+void CPrintBuffer::AddString( const char* szString )
 {
-    s32 length = (s32) strlen( string );
-    AddString( string, length );
+    s32 iLength = (s32) strlen( szString );
+    AddString( szString, iLength );
 }
 
-void CPrintBuffer::AddString( std::string string )
+void CPrintBuffer::AddString( std::string szString )
 {
-    AddString( string.c_str(), string.length() );
+    AddString( szString.c_str(), szString.length() );
 }
 
-void CPrintBuffer::AddJsonString( std::string json )
+void CPrintBuffer::AddJsonString( std::string szJson )
 {
     // Json string building is formed as an array of json objects.
     // We prepend "[" at the first log, comma delmit, then post-fix a "]" upon completion.
     if ( m_bIsStart )
     {
-        AddString( "[" + json );
+        AddString( "[" + szJson );
         m_bIsStart = false;
         m_bAddJsonClose = true;
     }
     else
     {
-        AddString( "," + json );
+        AddString( "," + szJson );
     }
 }
 

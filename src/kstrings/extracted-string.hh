@@ -33,12 +33,11 @@ public:
     // Constructor
     CExtractedString();
     // Constructor for char strings
-    CExtractedString( const char* string, usize size_in_bytes, eStringType type,
-                      s32 offset_start, s32 offset_end );
+    CExtractedString( const char* szString, usize iSizeInBytes, eStringType eType,
+                      s32 iOffsetStart, s32 iOffsetEnd );
     // Constructor for wide char strings
-    CExtractedString( const wchar_t* string, usize size_in_bytes, eStringType type,
-                      s32 offset_start, s32 offset_end );
-
+    CExtractedString( const wchar_t* szString, usize iSizeInBytes, eStringType eType,
+                      s32 iOffsetStart, s32 iOffsetEnd );
     f32 GetProbaInteresting();          // Probability of being an interesting string
     usize GetSizeInBytes();             // Size in bytes
     std::string GetString();            // Get the string value

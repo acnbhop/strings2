@@ -20,19 +20,19 @@ class CPrintBuffer
     char* m_pBuffer;                // Pointer to the buffer
 public:
     // Add string with specified length
-    void AddString( const char* string, size_t length );
+    void AddString( const char* szString, usize iLength );
     // Add string
-    void AddString( const char* string );
+    void AddString( const char* szString );
     // Add string std::string
-    void AddString( std::string string );
+    void AddString( std::string szString );
 
     // Add json string
-    void AddJsonString( std::string json );
+    void AddJsonString( std::string szJson );
     // Digest the buffer to stdout
     void Digest();
 
     // Constructor
-    CPrintBuffer( s32 buffer_size );
+    CPrintBuffer( s32 iBufferSize );
     // Destructor
     ~CPrintBuffer( void );
 };

@@ -33,20 +33,20 @@ struct sMBIBasicInfo
 // Memory strings dumper class
 class CMemoryStrings
 {
-    std::vector<CModule> m_modules;     // List of modules in the process
-    CStringParser* m_parser;            // String parser instance
+    std::vector<CModule> m_Modules;     // List of modules in the process
+    CStringParser* m_Parser;            // String parser instance
 
     // Generate the module list for the process
-    void _GenerateModuleList(HANDLE hSnapshot);
+    void _GenerateModuleList(HANDLE powl);
     // Process all memory regions in the process
-    bool _ProcessAllMemory(HANDLE ph, std::string process_name);
+    bool _ProcessAllMemory(HANDLE pHandle, std::string szProcessName);
     // Get basic MBI information for an address
-    sMBIBasicInfo _GetMbiInfo(u64 address, HANDLE ph);
+    sMBIBasicInfo _GetMbiInfo(u64 iAddress, HANDLE pHandle);
 public:
     // Constructor
-    CMemoryStrings(CStringParser* parser);
+    CMemoryStrings(CStringParser* pParser);
     // Dump the process memory strings
-    bool DumpProcess(DWORD pid);
+    bool DumpProcess(DWORD iPID);
     // Dump the system memory strings
     bool DumpSystem();
 

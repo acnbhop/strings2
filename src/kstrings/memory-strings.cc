@@ -26,9 +26,9 @@ static bool LocalIsWin64( HANDLE process )
     return false;
 }
 
-CMemoryStrings::CMemoryStrings( CStringParser* parser )
+CMemoryStrings::CMemoryStrings( CStringParser* pParser )
 {
-    this->m_parser = parser;
+    this->m_Parser = pParser;
 }
 
 
@@ -63,45 +63,45 @@ bool CMemoryStrings::DumpSystem()
     return false;
 }
 
-bool CMemoryStrings::DumpProcess( DWORD pid )
+bool CMemoryStrings::DumpProcess( DWORD iPID )
 {
     // Open the process
-    HANDLE ph = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, pid );
-    if ( ph != NULL )
+    HANDLE pHandle = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, iPID );
+    if ( pHandle != NULL )
     {
         // Assign the process name
-        char process_name[0x100] = { 0 };
-        GetModuleBaseNameA( ph, 0, process_name, 0x100 );
+        char szProcessName[0x100] = { 0 };
+        GetModuleBaseNameA( pHandle, 0, szProcessName, 0x100 );
 
         // Generate memory region list
-        HANDLE hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, pid );
+        HANDLE hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, iPID );
         if ( hSnapshot != INVALID_HANDLE_VALUE )
         {
             this->_GenerateModuleList( hSnapshot );
             CloseHandle( hSnapshot );
 
             // Walk through the process regions, extracting the strings
-            bool result = this->_ProcessAllMemory( ph, process_name );
-            CloseHandle( ph ); // Don't forget to close the process handle!
+            bool result = this->_ProcessAllMemory( pHandle, szProcessName );
+            CloseHandle( pHandle ); // Don't forget to close the process handle!
 
             return result;
         }
         else
         {
-            fprintf( stderr, "Failed to gather module information for process 0x%x (%lu). ", pid, pid );
+            fprintf( stderr, "Failed to gather module information for process 0x%x (%lu). ", iPID, iPID );
             PrintLastError( "DumpProcess (CreateToolhelp32Snapshot)" );
         }
-        CloseHandle( ph );
+        CloseHandle( pHandle );
     }
     else
     {
-        fprintf( stderr, "Failed to open process 0x%x (%lu). ", pid, pid );
+        fprintf( stderr, "Failed to open process 0x%x (%lu). ", iPID, iPID );
         PrintLastError( "DumpProcess (OpenProcess)" );
     }
     return false;
 }
 
-sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 address, HANDLE ph )
+sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 iAddress, HANDLE pHandle )
 {
     _MEMORY_BASIC_INFORMATION64 mbi;
     sMBIBasicInfo result;
@@ -113,7 +113,7 @@ sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 address, HANDLE ph )
     result.iSize = 0;
 
     // Load this heap information
-    SIZE_T blockSize = VirtualQueryEx( ph, (LPCVOID) address, (PMEMORY_BASIC_INFORMATION) &mbi, sizeof( _MEMORY_BASIC_INFORMATION64 ) );
+    SIZE_T blockSize = VirtualQueryEx( pHandle, (LPCVOID) iAddress, (PMEMORY_BASIC_INFORMATION) &mbi, sizeof( _MEMORY_BASIC_INFORMATION64 ) );
 
     if ( blockSize == sizeof( _MEMORY_BASIC_INFORMATION64 ) )
     {
@@ -128,7 +128,7 @@ sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 address, HANDLE ph )
     {
         // Fallback for 32-bit queries if needed, or partial reads
         _MEMORY_BASIC_INFORMATION32 mbi32;
-        if ( VirtualQueryEx( ph, (LPCVOID) address, (PMEMORY_BASIC_INFORMATION) &mbi32, sizeof( _MEMORY_BASIC_INFORMATION32 ) ) == sizeof( _MEMORY_BASIC_INFORMATION32 ) )
+        if ( VirtualQueryEx( pHandle, (LPCVOID) iAddress, (PMEMORY_BASIC_INFORMATION) &mbi32, sizeof( _MEMORY_BASIC_INFORMATION32 ) ) == sizeof( _MEMORY_BASIC_INFORMATION32 ) )
         {
             result.iBase = mbi32.BaseAddress;
             result.iEnd = (u64) mbi32.BaseAddress + (u64) mbi32.RegionSize;
@@ -142,7 +142,7 @@ sMBIBasicInfo CMemoryStrings::_GetMbiInfo( u64 address, HANDLE ph )
     return result;
 }
 
-bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
+bool CMemoryStrings::_ProcessAllMemory( HANDLE pHandle, std::string process_name )
 {
     // Set the max address of the target process. Assume it is a 64 bit process.
     u64 max_address = 0xffffffffffffffff;
@@ -153,7 +153,7 @@ bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
     while ( address < max_address )
     {
         // Load this region information
-        sMBIBasicInfo mbi_info = _GetMbiInfo( address, ph );
+        sMBIBasicInfo mbi_info = _GetMbiInfo( address, pHandle );
 
         if ( mbi_info.iEnd <= address ) // prevent infinite loop if size is 0 or wrap around
             break;
@@ -167,7 +167,7 @@ bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
             if ( buffer != NULL )
             {
                 SIZE_T num_read = 0;
-                BOOL result = ReadProcessMemory( ph, (LPCVOID) mbi_info.iBase, buffer, mbi_info.iSize, &num_read );
+                BOOL result = ReadProcessMemory( pHandle, (LPCVOID) mbi_info.iBase, buffer, mbi_info.iSize, &num_read );
 
                 if ( result && num_read > 0 )
                 {
@@ -175,7 +175,7 @@ bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
                     std::string module_name_short = "region";
                     std::string module_name_long = "region";
 
-                    for ( const auto& mod : m_modules )
+                    for ( const auto& mod : m_Modules )
                     {
                         if ( mod.Contains( (u64) mbi_info.iBase ) )
                         {
@@ -191,7 +191,7 @@ bool CMemoryStrings::_ProcessAllMemory( HANDLE ph, std::string process_name )
                     std::stringstream short_name;
                     short_name << process_name << ":" << module_name_short << "@0x" << std::hex << mbi_info.iBase;
 
-                    m_parser->ParseBlock( buffer, (u32) num_read, short_name.str(), long_name.str(), mbi_info.iBase );
+                    m_Parser->ParseBlock( buffer, (u32) num_read, short_name.str(), long_name.str(), mbi_info.iBase );
                 }
                 else
                 {
@@ -221,11 +221,11 @@ void CMemoryStrings::_GenerateModuleList( HANDLE hSnapshot )
 
     if ( Module32FirstW( hSnapshot, &tmp_m ) )
     {
-        m_modules.push_back( CModule( tmp_m ) );
+        m_Modules.push_back( CModule( tmp_m ) );
 
         while ( Module32NextW( hSnapshot, &tmp_m ) )
         {
-            m_modules.push_back( CModule( tmp_m ) );
+            m_Modules.push_back( CModule( tmp_m ) );
         }
     }
 }

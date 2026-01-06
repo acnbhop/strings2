@@ -21,25 +21,25 @@ CExtractedString::CExtractedString()
     m_OffsetEnd = 0;
 }
 
-CExtractedString::CExtractedString( const char* string, size_t size_in_bytes, eStringType type, s32 offset_start, s32 offset_end )
+CExtractedString::CExtractedString( const char* szString, size_t iSizeInBytes, eStringType eType, s32 iOffsetStart, s32 iOffsetEnd )
 {
-    m_Type = type;
-    m_String = std::string( string, size_in_bytes );
-    m_SizeInBytes = size_in_bytes;
-    m_OffsetStart = offset_start;
-    m_OffsetEnd = offset_end;
+    m_Type = eType;
+    m_String = std::string( szString, iSizeInBytes );
+    m_SizeInBytes = iSizeInBytes;
+    m_OffsetStart = iOffsetStart;
+    m_OffsetEnd = iOffsetEnd;
 }
 
-CExtractedString::CExtractedString( const wchar_t* string, size_t size_in_bytes, eStringType type, s32 offset_start, s32 offset_end )
+CExtractedString::CExtractedString( const wchar_t* szString, size_t iSizeInBytes, eStringType eType, s32 iOffsetStart, s32 iOffsetEnd )
 {
-    m_Type = type;
+    m_Type = eType;
 
     // Convert to UTF8 string
-    m_String = _converter.to_bytes( string, string + size_in_bytes / 2 );
+    m_String = _converter.to_bytes( szString, szString + iSizeInBytes / 2 );
     //m_String = _wchar_to_utf8(string, size_in_bytes);
-    m_SizeInBytes = size_in_bytes;
-    m_OffsetStart = offset_start;
-    m_OffsetEnd = offset_end;
+    m_SizeInBytes = iSizeInBytes;
+    m_OffsetStart = iOffsetStart;
+    m_OffsetEnd = iOffsetEnd;
 }
 
 f32 CExtractedString::GetProbaInteresting()
@@ -50,10 +50,10 @@ f32 CExtractedString::GetProbaInteresting()
 
     // The model is trained to only support strings of length 4 to 7. Longer
     // strings are asssumed to be interesting, shorter assumed gibberish..
-    int l = (int) m_String.length();
-    if ( l > 16 )
+    s32 iLength = (int) m_String.length();
+    if ( iLength > 16 )
         return 1.0f;
-    if ( l < 4 )
+    if ( iLength < 4 )
         return 0.0f;
 
     // Score the features
@@ -62,38 +62,38 @@ f32 CExtractedString::GetProbaInteresting()
     // 	1 for the total number of characters in string
     // 	1 for the total number of > 0x128 ascii code
     //  1 for distinct character count
-    f32 score = (f32) string_model::fBias;
+    f32 fScore = (f32) string_model::fBias;
     std::unordered_set<wchar_t> CharacterCounts; // Character counts 
-    for ( int i = 0; i < l; i++ )
+    for ( usize i = 0; i < iLength; i++ )
     {
         // Count distinct characters
         CharacterCounts.insert( m_String[i] );
         if ( m_String[i] >= 0x9 && m_String[i] <= 0x7E )
         {
             // Unigram
-            score += (f32) string_model::fWeights[m_String[i] - 0x9];
+            fScore += (f32) string_model::fWeights[m_String[i] - 0x9];
 
             // Bigram
-            if ( i + 1 < l && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E )
+            if ( i + 1 < iLength && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E )
             {
-                score += (f32) string_model::fWeights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
+                fScore += (f32) string_model::fWeights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
             }
         }
         else
         {
             // Number of non-latin unicode characters
-            score += (f32) string_model::fWeights[118 + 118 + 118 * 118 + 1];
+            fScore += (f32) string_model::fWeights[118 + 118 + 118 * 118 + 1];
         }
     }
 
     // Add the string length weight
-    score += (f32) string_model::fWeights[118 + 118 + 118 * 118] * (float) l;
+    fScore += (f32) string_model::fWeights[118 + 118 + 118 * 118] * (float) iLength;
 
     // Add the distinct character count weight
-    score += (f32) string_model::fWeights[118 + 118 + 118 * 118 + 2] * (float) CharacterCounts.size();
+    fScore += (f32) string_model::fWeights[118 + 118 + 118 * 118 + 2] * (float) CharacterCounts.size();
 
     // Convert it to a probability
-    return 1.0f / (1.0f + exp( -score ));
+    return 1.0f / (1.0f + exp( -fScore ));
 }
 
 usize CExtractedString::GetSizeInBytes()

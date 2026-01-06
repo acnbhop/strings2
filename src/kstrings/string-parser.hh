@@ -62,11 +62,11 @@ class CStringParser
 
 public:
     // Constructor
-    CStringParser( sStringOptions options );
+    CStringParser( sStringOptions Options );
     // Parse a memory block
-    bool ParseBlock( unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address );
+    bool ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNameShort, std::string szNameLong, u64 iBaseAddress );
     // Parse a file stream
-    bool ParseStream( FILE* fh, std::string name_short, std::string name_long );
+    bool ParseStream( FILE* pFileHandle, std::string szNameShort, std::string szNameLong );
     // Destructor
     ~CStringParser( void );
 };
