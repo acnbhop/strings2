@@ -72,6 +72,7 @@
 #if !KEN_COMPILER_GCC
 #pragma comment(lib, "Shlwapi.lib")
 #endif
+#define NOMINMAX
 #include <Windows.h>
 #include <tlhelp32.h>
 #include <Psapi.h>
