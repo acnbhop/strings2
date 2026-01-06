@@ -30,12 +30,17 @@ bool CStringParser::ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNa
             Json["name_long"] = szNameLong;
             
             // gcc-disable: -Wsign-compare
-            #if KEN_COMPILER_GCC
-                #pragma GCC diagnostic push
-                #pragma GCC diagnostic ignored "-Wsign-compare"
+            #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                #if KEN_COMPILER_APPLE_CLANG
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Wsign-compare"
+                #else
+                    #pragma GCC diagnostic push
+                    #pragma GCC diagnostic ignored "-Wsign-compare"
+                #endif
             #endif
 
-            for ( int i = 0; i < r_vect.size(); i++ )
+            for ( usize i = 0; i < r_vect.size(); i++ )
             {
                 Json["strings"][i]["string"] = std::get<0>( r_vect[i] );
                 Json["strings"][i]["type"] = std::get<1>( r_vect[i] );
@@ -51,13 +56,22 @@ bool CStringParser::ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNa
             for ( int i = 0; i < r_vect.size(); i++ )
             {
 
-                #if KEN_COMPILER_GCC
-                    #pragma GCC diagnostic pop
+                #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                    #if KEN_COMPILER_APPLE_CLANG
+                        #pragma clang diagnostic pop
+                    #else
+                        #pragma GCC diagnostic pop
+                    #endif
                 #endif
 
-                #if KEN_COMPILER_GCC
-                    #pragma GCC diagnostic push
-                    #pragma GCC diagnostic ignored "-Wparentheses"
+                #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                    #if KEN_COMPILER_APPLE_CLANG
+                        #pragma clang diagnostic push
+                        #pragma clang diagnostic ignored "-Wlogical-op-parentheses"
+                    #else
+                        #pragma GCC diagnostic push
+                        #pragma GCC diagnostic ignored "-Wparentheses"
+                    #endif
                 #endif
 
                 bool is_interesting = std::get<3>( r_vect[i] );
@@ -65,8 +79,12 @@ bool CStringParser::ParseBlock( u8* pBuffer, u32 iBufferLength, std::string szNa
                      !is_interesting && m_Options.bPrintNotInteresting )
                 {
 
-                    #if KEN_COMPILER_GCC
-                        #pragma GCC diagnostic pop
+                    #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                        #if KEN_COMPILER_APPLE_CLANG
+                            #pragma clang diagnostic pop
+                        #else
+                            #pragma GCC diagnostic pop
+                        #endif
                     #endif
 
                     // Add the prefixes as appropriate
