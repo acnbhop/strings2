@@ -9,7 +9,7 @@
 #include <vector>
 #include <unordered_set>
 
-using namespace std;
+__NS_BEGIN_KSTRINGS
 
 #define WINDOW_SIZE 11
 
@@ -67,12 +67,19 @@ static std::unordered_set<wchar_t> is_seen_commoncrawl({
     }
 );
 
-size_t try_utf8_char_step(const unsigned char* buffer, size_t buffer_size, long offset);
+size_t TryUTF8CharStep(const unsigned char* buffer, usize buffer_size, isize offset);
 
-int get_language_group(wchar_t c);
+s32 GetLanguageGroup(wchar_t c);
 
-extracted_string* try_extract_string(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars);
+CExtractedString* TryExtractString(const unsigned char* buffer, usize buffer_size, long offset, 
+    usize min_chars);
 
-std::tuple<string, string, std::pair<int, int>, bool> try_extract_string_tuple(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars, bool only_interesting);
+std::tuple<std::string, std::string, std::pair<int, int>, bool> 
+try_extract_string_tuple(const unsigned char* buffer, usize buffer_size, long offset, 
+    usize min_chars, bool only_interesting);
 
-vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_strings(const unsigned char buffer[], size_t buffer_size, size_t min_chars, bool only_interesting);
+std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> 
+ExtractAllStrings(const unsigned char buffer[], usize buffer_size, usize min_chars, 
+    bool only_interesting);
+
+__NS_END_KSTRINGS

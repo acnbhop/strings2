@@ -10,40 +10,40 @@
 #include <codecvt>
 #include <unordered_set>
 
-using namespace std;
+__NS_BEGIN_KSTRINGS
 
-enum STRING_TYPE
+enum eStringType
 {
     TYPE_UNDETERMINED,
     TYPE_UTF8,
     TYPE_WIDE_STRING
 };
 
-
-
-class extracted_string
+class CExtractedString
 {
 private:
-    STRING_TYPE m_type;
-    std::string m_string; // Supports Utf8
-    size_t m_size_in_bytes;
-    int m_offset_start;
-    int m_offset_end;
-
+    eStringType m_Type;
+    std::string m_String; // Supports Utf8
+    usize m_SizeInBytes;
+    s32 m_OffsetStart;
+    s32 m_OffsetEnd;
 public:
-    extracted_string();
-    extracted_string(const char* string, size_t size_in_bytes, STRING_TYPE type, int offset_start, int offset_end);
-    extracted_string(const wchar_t* string, size_t size_in_bytes, STRING_TYPE type, int offset_start, int offset_end);
+    CExtractedString();
+    CExtractedString(const char* string, usize size_in_bytes, eStringType type, 
+        s32 offset_start, s32 offset_end);
+    CExtractedString(const wchar_t* string, usize size_in_bytes, eStringType type, 
+        s32 offset_start, s32 offset_end);
 
-    float get_proba_interesting();
-    size_t get_size_in_bytes();
-    string get_string();
-    STRING_TYPE get_type();
-    string get_type_string();
-    int get_offset_start();
-    int get_offset_end();
+    f32 GetProbaInteresting();
+    usize GetSizeInBytes();
+    std::string GetString();
+    eStringType GetType();
+    std::string GetTypeString();
+    s32 GetOffsetStart();
+    s32 GetOffsetEnd();
+    bool IsInteresting();
 
-    bool is_interesting();
-
-    ~extracted_string();
+    ~CExtractedString();
 };
+
+__NS_END_KSTRINGS

@@ -6,23 +6,25 @@
 #include <stdio.h>
 #include <string>
 
-using namespace std;
+__NS_BEGIN_KSTRINGS
 
-class print_buffer
+class CPrintBuffer
 {
-    bool m_is_start = true;
-    bool m_add_json_close = false;
-    int m_buffer_size;
-    int m_space_used;
-    char* m_buffer;
+    bool m_bIsStart = true;
+    bool m_bAddJsonClose = false;
+    s32 m_iBufferSize;
+    s32 m_iSpaceUsed;
+    char* m_pBuffer;
 public:
-    void add_string(const char* string, size_t length);
-    void add_string(const char* string);
-    void add_string(string string);
+    void AddString(const char* string, size_t length);
+    void AddString(const char* string);
+    void AddString(std::string string);
 
-    void add_json_string(string json);
-
-    void digest();
-    print_buffer(int buffer_size);
-    ~print_buffer(void);
+    void AddJsonString(std::string json);
+    void Digest();
+    
+    CPrintBuffer(s32 buffer_size);
+    ~CPrintBuffer(void);
 };
+
+__NS_END_KSTRINGS

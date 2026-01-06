@@ -1,9 +1,12 @@
-#include "stdafx.h"
-#include "binary2strings.hpp"
+// Core header
+#include "kstrings/core.hh"
 
-using namespace std;
+// File header
+#include "kstrings/binary2strings.hh"
 
-size_t try_utf8_char_step(const unsigned char* buffer, size_t buffer_size, long offset)
+__NS_BEGIN_KSTRINGS
+
+usize try_utf8_char_step(const unsigned char* buffer, usize buffer_size, isize offset)
 {
     // Returns 0 if it's not likely a valid utf8 character. For ascii range of characters it requires
     // the character to be a displayable character.
@@ -98,17 +101,19 @@ int get_language_group(wchar_t c)
 }
 
 // Note: Buffer overrun security checks disabled, since they added ~50% overhead.
-__declspec(safebuffers) extracted_string* try_extract_string(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars)
+__declspec(safebuffers) extracted_string* try_extract_string(const unsigned char* buffer, 
+    usize buffer_size, isize offset, usize min_chars)
 {
-    // Try extracting the string as either utf8 or unicode wchar format. Returns None if it's not a valid string.
-    int i;
-    int char_count;
+    // Try extracting the string as either utf8 or unicode wchar format. 
+    // Returns None if it's not a valid string.
+    usize i;
+    usize char_count;
 
     // Try to parse as utf8 first
-    size_t utf_char_len;
+    usize utf_char_len;
     utf_char_len = try_utf8_char_step(buffer, buffer_size, offset);
 
-    if (utf_char_len >= 0)
+    if (utf_char_len > 0)
     {
         i = offset;
         char_count = 0;
@@ -124,7 +129,9 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
         if (char_count >= min_chars)
         {
             // Return the extracted string
-            return new extracted_string((char*)(buffer + offset), i - offset, TYPE_UTF8, offset, i - 1);
+            return new extracted_string(
+                (char*)(buffer + offset), i - offset, TYPE_UTF8, offset, i - 1
+            );
         }
 
         // Not a valid utf8 string, try a unicode string parse still
@@ -181,14 +188,17 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
     if (char_count >= min_chars)
     {
         // Return the extracted string
-        return new extracted_string((wchar_t*)(buffer + offset), i - offset, TYPE_WIDE_STRING, offset, i - 2);
+        return new extracted_string(
+            (wchar_t*)(buffer + offset), i - offset, TYPE_WIDE_STRING, offset, i - 2
+        );
     }
 
     return NULL; // Invalid string at this offset
 }
 
-
-std::tuple<string, string, std::pair<int, int>, bool> try_extract_string_tuple(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars, bool only_interesting)
+std::tuple<std::string, std::string, std::pair<int, int>, bool> 
+try_extract_string_tuple(const unsigned char* buffer, usize buffer_size, isize offset, 
+    usize min_chars, bool only_interesting)
 {
     // Simple wrapper to return a tuple instead
     extracted_string* s = try_extract_string(buffer, buffer_size, offset, min_chars);
@@ -216,13 +226,15 @@ std::tuple<string, string, std::pair<int, int>, bool> try_extract_string_tuple(c
 }
 
 
-vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_strings(const unsigned char buffer[], size_t buffer_size, size_t min_chars, bool only_interesting)
+std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> 
+extract_all_strings(const unsigned char buffer[], usize buffer_size, usize min_chars, 
+    bool only_interesting)
 {
     // Process the specified binary buffer and extract all strings
-    long offset = 0;
-    vector<std::tuple<string, string, std::pair<int, int>, bool>> r_vect;
-    vector<float> proba_interesting_vect;
-    vector<float> proba_interesting_avg_vect;
+    isize offset = 0;
+    std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect;
+    std::vector<float> proba_interesting_vect;
+    std::vector<float> proba_interesting_avg_vect;
     extracted_string* s;
 
     float last_proba_interestings[WINDOW_SIZE] = { 0.0f };
@@ -234,11 +246,11 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
 
         if (s)
         {
-            float proba_interesting = s->get_proba_interesting();
+            f32 proba_interesting = s->get_proba_interesting();
 
             // Add the new string
             r_vect.push_back(
-                tuple<string, string, std::pair<int, int>, bool>(
+                std::tuple<std::string, std::string, std::pair<int, int>, bool>(
                     s->get_string(),
                     s->get_type_string(),
                     std::pair<int, int>(s->get_offset_start(), s->get_offset_end()),
@@ -247,7 +259,7 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
             );
 
             // Update the last proba_interesting array
-            float total = 0.0;
+            f32 total = 0.0;
 
             // Shift the moving window of interesting strings
             for (int j = WINDOW_SIZE - 2; j >= 0; j--)
@@ -259,7 +271,7 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
             // Add the new interesting string value
             last_proba_interestings[0] = proba_interesting;
             total += proba_interesting;
-            float average = total / (float)WINDOW_SIZE;
+            f32 average = total / (f32)WINDOW_SIZE;
             proba_interesting_avg_vect.push_back(average);
             proba_interesting_vect.push_back(proba_interesting);
 
@@ -276,11 +288,11 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
     }
 
     // Have a pass through the strings averaging the interestingness and filtering
-    vector<std::tuple<string, string, std::pair<int, int>, bool>> r_vect_filt;
+    std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect_filt;
     for (int i = 0; i < r_vect.size(); i++)
     {
         // Get the interestingness
-        float proba_interesting_avg = 0.0;
+        f32 proba_interesting_avg = 0.0;
 
         // This string is interesting is the window just before or after is interesting
         proba_interesting_avg = proba_interesting_avg_vect[i];
@@ -294,7 +306,7 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
         if (!only_interesting || proba_interesting_avg >= 0.2 || proba_interesting_vect[i] >= 0.5)
         {
             r_vect_filt.push_back(
-                tuple<string, string, std::pair<int, int>, bool>(
+                std::tuple<std::string, std::string, std::pair<int, int>, bool>(
                     std::get<0>(r_vect[i]),
                     std::get<1>(r_vect[i]),
                     std::get<2>(r_vect[i]),
@@ -306,3 +318,5 @@ vector<std::tuple<string, string, std::pair<int, int>, bool>> extract_all_string
 
     return r_vect_filt;
 }
+
+__NS_END_KSTRINGS

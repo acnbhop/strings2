@@ -1,78 +1,81 @@
-#include "StdAfx.h"
-#include "print_buffer.h"
-#include <string>
+// Core header
+#include "kstrings/core.hh"
 
-print_buffer::print_buffer(int buffer_size)
+// File header
+#include "kstrings/print-buffer.hh"
+
+__NS_BEGIN_KSTRINGS
+
+CPrintBuffer::CPrintBuffer(s32 buffer_size)
 {
-    this->m_buffer_size = buffer_size;
-    this->m_buffer = new char[buffer_size];
-    this->m_space_used = 0;
+    this->m_iBufferSize = buffer_size;
+    this->m_pBuffer = new char[buffer_size];
+    this->m_iSpaceUsed = 0;
 }
 
-void print_buffer::add_string(const char* string, size_t length)
+void CPrintBuffer::AddString(const char* string, size_t length)
 {
     // Digest the buffer if it is full
-    if( m_space_used + length + 1 >= m_buffer_size )
-        digest();
-
+    if( m_iSpaceUsed + length + 1 >= m_iBufferSize )
+        Digest();
     // Copy the string if there is room
-    if( m_space_used + length + 1 >= m_buffer_size )
+    if( m_iSpaceUsed + length + 1 >= m_iBufferSize )
     {
         // Digest this string without buffering it
         fwrite(string, length, 1, stdout);
     }else{
         // Add it to the buffer
-        memcpy( m_buffer + m_space_used, string, length );
-        m_space_used += length;
-        m_buffer[m_space_used] = 0;
+        memcpy( m_pBuffer + m_iSpaceUsed, string, length );
+        m_iSpaceUsed += length;
+        m_pBuffer[m_iSpaceUsed] = 0;
     }
 }
 
-void print_buffer::add_string(const char* string)
+void CPrintBuffer::AddString(const char* string)
 {
     int length = strlen(string);
-    add_string(string, length);
+    AddString(string, length);
 }
 
-void print_buffer::add_string(string string)
+void CPrintBuffer::AddString(std::string string)
 {
-    add_string(string.c_str(), string.length());
+    AddString(string.c_str(), string.length());
 }
 
-void print_buffer::add_json_string(string json)
+void CPrintBuffer::AddJsonString(std::string json)
 {
     // Json string building is formed as an array of json objects.
     // We prepend "[" at the first log, comma delmit, then post-fix a "]" upon completion.
-    if (m_is_start)
+    if (m_bIsStart)
     {
-        add_string("[" + json);
-        m_is_start = false;
-        m_add_json_close = true;
+        AddString("[" + json);
+        m_bIsStart = false;
+        m_bAddJsonClose = true;
     }
     else
     {
-        add_string("," + json);
+        AddString("," + json);
     }
 }
 
-void print_buffer::digest()
+void CPrintBuffer::Digest()
 {
-    if( m_space_used > 0 )
+    if( m_iSpaceUsed > 0 )
     {
         // Print the current buffer
-        fwrite( m_buffer, 1, m_space_used, stdout);
+        fwrite( m_pBuffer, 1, m_iSpaceUsed, stdout);
         fflush( stdout );
-        m_buffer[0] = 0;
-        m_space_used = 0;
+        m_pBuffer[0] = 0;
+        m_iSpaceUsed = 0;
     }
 }
 
-print_buffer::~print_buffer(void)
+CPrintBuffer::~CPrintBuffer(void)
 {
-    if (m_add_json_close)
-        add_string("]");
-    digest();
-    delete[] m_buffer;
-
-    
+    if (m_bAddJsonClose)
+        AddString("]");
+    Digest();
+    delete[] m_pBuffer;
 }
+
+__NS_END_KSTRINGS

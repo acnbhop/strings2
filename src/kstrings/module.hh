@@ -1,22 +1,26 @@
 #pragma once
-#include <windows.h>
-#include <tlhelp32.h>
-#include <iostream>	
+
+// Core header
+#include "kstrings/core.hh"
+
+#include <iostream>
 #include <string>
 #include <locale>
 #include <codecvt>
 
-using namespace std;
+__NS_BEGIN_KSTRINGS
 
-class module
+class CModule
 {
-    MODULEENTRY32W m_module_details;
+    MODULEENTRY32W m_ModuleDetails;
 public:
-    bool contains(PVOID64 address);
-    string get_filepath();
-    string get_filename();
+    bool Contains(PVOID64 address);
+    std::string GetFilepath();
+    std::string GetFilename();
 
-    module(MODULEENTRY32W details);
-    ~module(void);
-    bool operator== (const module &other) const;
+    CModule(MODULEENTRY32W details);
+    ~CModule(void);
+    bool operator== (const CModule &other) const;
 };
+
+__NS_END_KSTRINGS

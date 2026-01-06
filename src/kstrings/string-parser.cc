@@ -1,30 +1,34 @@
-#include "StdAfx.h"
-#include "string_parser.h"
+// Core header
+#include "kstrings/core.hh"
 
-using namespace nlohmann;
+// File header
+#include "kstrings/string-parser.hh"
 
-bool string_parser::parse_block(unsigned char* buffer, unsigned int buffer_length, string name_short, string name_long, unsigned long long base_address)
+
+__NS_BEGIN_KSTRINGS
+
+bool CStringParser::ParseBlock(unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address)
 {
     if( buffer != NULL && buffer_length > 0)
     {
         // Process this buffer
-        vector<std::tuple<string, string, std::pair<int, int>, bool>> r_vect = extract_all_strings(buffer, buffer_length, this->m_options.min_chars, !this->m_options.print_not_interesting);
+        std::vector<std::tuple<std::string, std::string, std::pair<int, int>, bool>> r_vect = ExtractAllStrings(buffer, buffer_length, this->m_Options.iMinChars, !this->m_Options.bPrintNotInteresting);
 
         
-        if (m_options.print_json)
+        if (m_Options.bPrintJson)
         {
             // Output the strings to a json file
-            json j;
-            j["name_short"] = name_short;
-            j["name_long"] = name_long;
+            nlohmann::json Json;
+            Json["name_short"] = name_short;
+            Json["name_long"] = name_long;
             for (int i = 0; i < r_vect.size(); i++)
             {
-                j["strings"][i]["string"] = std::get<0>(r_vect[i]);
-                j["strings"][i]["type"] = std::get<1>(r_vect[i]);
-                j["strings"][i]["span"] = { std::get<2>(r_vect[i]).first + base_address, std::get<2>(r_vect[i]).second + base_address };
-                j["strings"][i]["is_interesting"] = std::get<3>(r_vect[i]);
+                Json["strings"][i]["string"] = std::get<0>(r_vect[i]);
+                Json["strings"][i]["type"] = std::get<1>(r_vect[i]);
+                Json["strings"][i]["span"] = { std::get<2>(r_vect[i]).first + base_address, std::get<2>(r_vect[i]).second + base_address };
+                Json["strings"][i]["is_interesting"] = std::get<3>(r_vect[i]);
             }
-            this->m_printer->add_json_string(j.dump());
+            this->m_Printer->AddJsonString(Json.dump());
         }
         else
         {
@@ -32,38 +36,37 @@ bool string_parser::parse_block(unsigned char* buffer, unsigned int buffer_lengt
             for (int i = 0; i < r_vect.size(); i++)
             {
                 bool is_interesting = std::get<3>(r_vect[i]);
-                if (is_interesting && m_options.print_interesting ||
-                    !is_interesting && m_options.print_not_interesting)
+                if (is_interesting && m_Options.bPrintInteresting ||
+                    !is_interesting && m_Options.bPrintNotInteresting)
                 {
                     // Add the prefixes as appropriate
-                    if (m_options.print_filepath)
-                        this->m_printer->add_string(name_long + ",");
+                    if (m_Options.bPrintFilepath)
+                        this->m_Printer->AddString(name_long + ",");
 
-                    if (m_options.print_filename)
-                        this->m_printer->add_string(name_short + ",");
+                    if (m_Options.bPrintFilename)
+                        this->m_Printer->AddString(name_short + ",");
 
-                    if (m_options.print_string_type)
-                        this->m_printer->add_string(std::get<1>(r_vect[i]) + ",");
+                    if (m_Options.bPrintStringType)
+                        this->m_Printer->AddString(std::get<1>(r_vect[i]) + ",");
 
-                    if (m_options.print_span)
+                    if (m_Options.bPrintSpan)
                     {
                         std::stringstream span;
                         span << std::hex << "(0x" << (std::get<2>(r_vect[i]).first + base_address) << ",0x" << (std::get<2>(r_vect[i]).second + base_address) << "),";
-                        this->m_printer->add_string(span.str());
+                        this->m_Printer->AddString(span.str());
                     }
 
-                    string s = std::get<0>(r_vect[i]);
-                    if (m_options.escape_new_lines)
+                    std::string str = std::get<0>(r_vect[i]);
+                    if (m_Options.bEscapeNewLines)
                     {
                         size_t index = 0;
                         while (true) {
                             /* Locate the substring to replace. */
-                            index = s.find("\n", index);
+                            index = str.find("\n", index);
                             if (index == std::string::npos) break;
 
                             /* Make the replacement. */
-                            s.replace(index, 1, "\\n");
-
+                            str.replace(index, 1, "\\n");
                             /* Advance index forward so the next iteration doesn't pick it up as well. */
                             index += 2;
                         }
@@ -71,18 +74,17 @@ bool string_parser::parse_block(unsigned char* buffer, unsigned int buffer_lengt
                         index = 0;
                         while (true) {
                             /* Locate the substring to replace. */
-                            index = s.find("\r", index);
+                            index = str.find("\r", index);
                             if (index == std::string::npos) break;
 
                             /* Make the replacement. */
-                            s.replace(index, 1, "\\r");
-
+                            str.replace(index, 1, "\\r");
                             /* Advance index forward so the next iteration doesn't pick it up as well. */
                             index += 2;
                         }
                     }
                     
-                    this->m_printer->add_string(s + "\n");
+                    this->m_Printer->AddString(str + "\n");
                 }
             }
         }
@@ -90,37 +92,37 @@ bool string_parser::parse_block(unsigned char* buffer, unsigned int buffer_lengt
     return false;
 }
 
-string_parser::string_parser(STRING_OPTIONS options)
+CStringParser::CStringParser(sStringOptions options)
 {
-    m_printer = new print_buffer(0x100000);
-    this->m_options = options;
+    m_Printer = new CPrintBuffer(0x100000);
+    this->m_Options = options;
 }
 
-bool string_parser::parse_stream(FILE* fh, string name_short, string name_long)
+bool CStringParser::ParseStream(FILE* fh, std::string name_short, std::string name_long)
 {
     if( fh != NULL )
     {
         unsigned char* buffer;
-        int num_read;
-        long long offset = 0;
+        s32 num_read;
+        s64 offset = 0;
 
         // Adjust the start offset if specified
-        if (m_options.offset_start > 0)
-            fseek(fh, m_options.offset_start, SEEK_SET);
+        if (m_Options.iOffsetStart > 0)
+            fseek(fh, m_Options.iOffsetStart, SEEK_SET);
 
         // Allocate the buffer
-        buffer = new unsigned char[BLOCK_SIZE];
+        buffer = new unsigned char[iBlockSize];
 
         do
         {
             // Read the stream in blocks of 0x50000, assuming that a string does not border the regions.
-            if (m_options.offset_end > 0)
+            if (m_Options.iOffsetEnd > 0)
             {
-                num_read = fread(buffer, 1, min(BLOCK_SIZE, m_options.offset_end - m_options.offset_start), fh);
+                num_read = fread(buffer, 1, min(iBlockSize, m_Options.iOffsetEnd - m_Options.iOffsetStart), fh);
             }
             else
             {
-                num_read = fread(buffer, 1, BLOCK_SIZE, fh);
+                num_read = fread(buffer, 1, iBlockSize, fh);
             }
             
 
@@ -128,15 +130,15 @@ bool string_parser::parse_stream(FILE* fh, string name_short, string name_long)
             {
                 // We have read in the full contents now, lets process it.
                 if( offset > 0 )
-                    this->parse_block( buffer, num_read, name_short, name_long + ":offset=" + to_string(offset), 0);
+                    this->ParseBlock( buffer, num_read, name_short, name_long + ":offset=" + std::to_string(offset), 0);
                 else
-                    this->parse_block(buffer, num_read, name_short, name_long, 0);
+                    this->ParseBlock(buffer, num_read, name_short, name_long, 0);
 
                 offset += num_read;
             }
 
-            this->m_printer->digest();
-        }while( num_read == BLOCK_SIZE );
+            this->m_Printer->Digest();
+        }while( num_read == iBlockSize );
 
         // Clean up
         delete[] buffer;
@@ -148,7 +150,9 @@ bool string_parser::parse_stream(FILE* fh, string name_short, string name_long)
     }
 }
 
-string_parser::~string_parser(void)
+CStringParser::~CStringParser(void)
 {
-    delete m_printer;
+    delete m_Printer;
 }
+
+__NS_END_KSTRINGS

@@ -1,43 +1,44 @@
-// Class for extracted strings
-#include "stdafx.h"
-#include "extracted_string.hpp"
+// Core header
+#include "kstrings/core.hh"
 
-using namespace std;
+// File header
+#include "kstrings/extracted-string.hh"
+
+__NS_BEGIN_KSTRINGS
 
 std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
 
-extracted_string::extracted_string()
+CExtractedString::CExtractedString()
 {
-    m_type = TYPE_UNDETERMINED;
-    m_string = (std::string)NULL;
-    m_size_in_bytes = 0;
-    m_offset_start = 0;
-    m_offset_end = 0;
+    m_Type = TYPE_UNDETERMINED;
+    m_String = (std::string)NULL;
+    m_SizeInBytes = 0;
+    m_OffsetStart = 0;
+    m_OffsetEnd = 0;
 }
 
-extracted_string::extracted_string(const char* string, size_t size_in_bytes, STRING_TYPE type, int offset_start, int offset_end)
+CExtractedString::CExtractedString(const char* string, size_t size_in_bytes, eStringType type, s32 offset_start, s32 offset_end)
 {
-    m_type = type;
-    m_string = std::string(string, size_in_bytes);
-    m_size_in_bytes = size_in_bytes;
-    m_offset_start = offset_start;
-    m_offset_end = offset_end;
+    m_Type = type;
+    m_String = std::string(string, size_in_bytes);
+    m_SizeInBytes = size_in_bytes;
+    m_OffsetStart = offset_start;
+    m_OffsetEnd = offset_end;
 }
 
-extracted_string::extracted_string(const wchar_t* string, size_t size_in_bytes, STRING_TYPE type, int offset_start, int offset_end)
+CExtractedString::CExtractedString(const wchar_t* string, size_t size_in_bytes, eStringType type, s32 offset_start, s32 offset_end)
 {
-    m_type = type;
+    m_Type = type;
 
     // Convert to UTF8 string
-    m_string = _converter.to_bytes(string, string + size_in_bytes / 2);
-    //m_string = _wchar_to_utf8(string, size_in_bytes);
-
-    m_size_in_bytes = size_in_bytes;
-    m_offset_start = offset_start;
-    m_offset_end = offset_end;
+    m_String = _converter.to_bytes(string, string + size_in_bytes / 2);
+    //m_String = _wchar_to_utf8(string, size_in_bytes);
+    m_SizeInBytes = size_in_bytes;
+    m_OffsetStart = offset_start;
+    m_OffsetEnd = offset_end;
 }
 
-float extracted_string::get_proba_interesting()
+f32 CExtractedString::GetProbaInteresting()
 {
     // Returns a probability of the string being interesting, 0.0 to 1.0.
     // An interesting string is non-gibberish. Gibberish is mostly erroneous
@@ -45,7 +46,7 @@ float extracted_string::get_proba_interesting()
 
     // The model is trained to only support strings of length 4 to 7. Longer
     // strings are asssumed to be interesting, shorter assumed gibberish..
-    int l = m_string.length();
+    int l = m_String.length();
     if (l > 16)
         return 1.0f;
     if (l < 4)
@@ -57,22 +58,21 @@ float extracted_string::get_proba_interesting()
     // 	1 for the total number of characters in string
     // 	1 for the total number of > 0x128 ascii code
     //  1 for distinct character count
-    float score = string_model::bias;
-    unordered_set<wchar_t> cc; // Character counts 
+    f32 score = string_model::bias;
+    std::unordered_set<wchar_t> CharacterCounts; // Character counts 
     for (size_t i = 0; i < l; i++)
     {
         // Count distinct characters
-        cc.insert(m_string[i]);
-
-        if (m_string[i] >= 0x9 && m_string[i] <= 0x7E)
+        CharacterCounts.insert(m_String[i]);
+        if (m_String[i] >= 0x9 && m_String[i] <= 0x7E)
         {
             // Unigram
-            score += string_model::weights[m_string[i] - 0x9];
+            score += string_model::weights[m_String[i] - 0x9];
 
             // Bigram
-            if (i + 1 < l && m_string[i + 1] >= 0x9 && m_string[i + 1] <= 0x7E)
+            if (i + 1 < l && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E)
             {
-                score += string_model::weights[118 + (m_string[i] - 0x9) + 118 * (m_string[i + 1] - 0x9)];
+                score += string_model::weights[118 + (m_String[i] - 0x9) + 118 * (m_String[i + 1] - 0x9)];
             }
         }
         else
@@ -86,39 +86,39 @@ float extracted_string::get_proba_interesting()
     score += string_model::weights[118 + 118 + 118 * 118] * (float)l;
 
     // Add the distinct character count weight
-    score += string_model::weights[118 + 118 + 118 * 118 + 2] * (float)cc.size();
+    score += string_model::weights[118 + 118 + 118 * 118 + 2] * (float)CharacterCounts.size();
 
     // Convert it to a probability
     return 1.0f / (1.0f + exp(-score));
 }
 
-size_t extracted_string::get_size_in_bytes()
+usize CExtractedString::GetSizeInBytes()
 {
-    return m_size_in_bytes;
+    return m_SizeInBytes;
 }
 
-string extracted_string::get_string()
+std::string CExtractedString::GetString()
 {
-    return m_string;
+    return m_String;
 }
 
-bool extracted_string::is_interesting()
+bool CExtractedString::IsInteresting()
 {
-    return get_proba_interesting() > 0.5f;
+    return GetProbaInteresting() > 0.5f;
 }
 
-STRING_TYPE extracted_string::get_type()
+eStringType CExtractedString::GetType()
 {
-    return m_type;
+    return m_Type;
 }
 
-string extracted_string::get_type_string()
+std::string CExtractedString::GetTypeString()
 {
-    if (m_type == TYPE_UTF8)
+    if (m_Type == TYPE_UTF8)
     {
         return "UTF8";
     }
-    else if (m_type == TYPE_WIDE_STRING)
+    else if (m_Type == TYPE_WIDE_STRING)
     {
         return "WIDE_STRING";
     }
@@ -128,17 +128,19 @@ string extracted_string::get_type_string()
     }
 }
 
-int extracted_string::get_offset_start()
+int CExtractedString::GetOffsetStart()
 {
-    return m_offset_start;
+    return m_OffsetStart;
 }
 
-int extracted_string::get_offset_end()
+int CExtractedString::GetOffsetEnd()
 {
-    return m_offset_end;
+    return m_OffsetEnd;
 }
 
-extracted_string::~extracted_string()
+CExtractedString::~CExtractedString()
 {
     // Nothing to do
 }
+
+__NS_END_KSTRINGS

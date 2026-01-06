@@ -3,61 +3,62 @@
 // Core header
 #include "kstrings/core.hh"
 
+// kstrings headers
 #include "kstrings/print-buffer.hh"
 #include "kstrings/binary2strings.hh"
 
-#include <string>
-#include "windows.h"
+// Standard headers
 #include <algorithm>
-#include <errno.h>
 
+// External headers
 #include "extern/json.hpp"
 
+__NS_BEGIN_KSTRINGS
 
-using namespace std;
+constexpr auto iMaxStringSize = 0x2000;
+constexpr auto iBlockSize = 5e+7; // 50MB
 
-constexpr auto MAX_STRING_SIZE = 0x2000;
-constexpr auto BLOCK_SIZE = 5e+7; // 50MB
-
-struct STRING_OPTIONS
+struct sStringOptions
 {
-    bool print_utf8 = true;
-    bool print_wide_string = true;
-    bool print_string_type = false;
-    bool print_interesting = true;
-    bool print_not_interesting = false;
-    bool print_filename = false;
-    bool print_filepath = false;
-    bool print_span = false;
-    bool print_json = false;
-    bool escape_new_lines = false;
-    int min_chars = 4;
-    size_t offset_start = 0;
-    size_t offset_end = 0;
+    bool bPrintUTF8 = true;
+    bool bPrintWideString = true;
+    bool bPrintStringType = false;
+    bool bPrintInteresting = true;
+    bool bPrintNotInteresting = false;
+    bool bPrintFilename = false;
+    bool bPrintFilepath = false;
+    bool bPrintSpan = false;
+    bool bPrintJson = false;
+    bool bEscapeNewLines = false;
+    s32 iMinChars = 4;
+    usize iOffsetStart = 0;
+    usize iOffsetEnd = 0;
 };
 
-class string_parser
+class CStringParser
 {
     // Maybe add XOR methods for extracting strings?
-    enum EXTRACT_TYPE
+    enum eExtractType
     {
       EXTRACT_RAW,
       EXTRACT_ASM
     };
 
-    enum STRING_TYPE
+    enum eStringType
     {
       TYPE_UNDETERMINED,
       TYPE_ASCII,
       TYPE_UNICODE
     };
     
-    STRING_OPTIONS m_options;
-    print_buffer* m_printer;
+    sStringOptions m_Options;
+    CPrintBuffer* m_Printer;
     
 public:
-    string_parser( STRING_OPTIONS options );
-    bool parse_block( unsigned char* buffer, unsigned int buffer_length, string name_short, string name_long, unsigned long long base_address);
-    bool parse_stream( FILE* fh, string name_short, string name_long);
-    ~string_parser(void);
+    CStringParser( sStringOptions options );
+    bool ParseBlock( unsigned char* buffer, u32 buffer_length, std::string name_short, std::string name_long, u64 base_address);
+    bool ParseStream( FILE* fh, std::string name_short, std::string name_long);
+    ~CStringParser(void);
 };
+
+__NS_END_KSTRINGS

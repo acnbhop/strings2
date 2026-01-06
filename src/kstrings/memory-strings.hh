@@ -3,42 +3,43 @@
 // Core header
 #include "kstrings/core.hh"
 
+// kstrings headers
 #include "kstrings/module.hh"
 #include "kstrings/string-parser.hh"
 #include "kstrings/basics.hh"
 
 #include "windows.h"
-#include <tlhelp32.h>
-#include <Psapi.h>
+
 #include <vector>
 #include <string>
 #include <sstream>
 
-#pragma comment(lib, "Psapi")
-using namespace std;
+__NS_BEGIN_KSTRINGS
 
 struct MBI_BASIC_INFO
 {
-    unsigned __int64 base;
-    unsigned __int64 end;
-    DWORD protect;
-    bool valid;
-    bool executable;
-    unsigned __int64 size;
+    u64 iBase;
+    u64 iEnd;
+    u32 iProtect;
+    bool bValid;
+    bool bExecutable;
+    u64 iSize;
 };
 
-class memory_strings
+class CMemoryStrings
 {
-    vector<module> m_modules;
-    string_parser* m_parser;
+    std::vector<CModule> m_modules;
+    CStringParser* m_parser;
 
-    void _generate_module_list(HANDLE hSnapshot);
-    bool _process_all_memory(HANDLE ph, string process_name);
-    MBI_BASIC_INFO _get_mbi_info(unsigned __int64 address, HANDLE ph);
+    void _GenerateModuleList(HANDLE hSnapshot);
+    bool _ProcessAllMemory(HANDLE ph, std::string process_name);
+    MBI_BASIC_INFO _GetMbiInfo(unsigned __int64 address, HANDLE ph);
 public:
-    memory_strings(string_parser* parser);
-    bool dump_process(DWORD pid);
-    bool dump_system();
+    CMemoryStrings(CStringParser* parser);
+    bool DumpProcess(DWORD pid);
+    bool DumpSystem();
 
-    ~memory_strings(void);
+    ~CMemoryStrings(void);
 };
+
+__NS_END_KSTRINGS

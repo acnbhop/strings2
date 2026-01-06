@@ -1,15 +1,20 @@
-#include "StdAfx.h"
-#include "module.h"
+// Core header
+#include "kstrings/core.hh"
 
-bool module::contains(PVOID64 address)
+// File header
+#include "kstrings/module.hh"
+
+__NS_BEGIN_KSTRINGS
+
+bool CModule::Contains(PVOID64 address)
 {
     // Check if this module contains the specified address
-    return (BYTE*) address >= m_module_details.modBaseAddr && (BYTE*) address < m_module_details.modBaseAddr + m_module_details.modBaseSize;
+    return (BYTE*) address >= m_ModuleDetails.modBaseAddr && (BYTE*) address < m_ModuleDetails.modBaseAddr + m_ModuleDetails.modBaseSize;
 }
 
-string module::get_filepath()
+std::string CModule::GetFilepath()
 {
-    wstring ws = m_module_details.szExePath;
+    std::wstring ws = m_ModuleDetails.szExePath;
 
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -18,9 +23,9 @@ string module::get_filepath()
     return converter.to_bytes(ws);
 }
 
-string module::get_filename()
+std::string CModule::GetFilename()
 {
-    wstring ws = m_module_details.szModule;
+    std::wstring ws = m_ModuleDetails.szModule;
 
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -29,16 +34,18 @@ string module::get_filename()
     return converter.to_bytes(ws);
 }
 
-bool module::operator== (const module &other) const
+bool CModule::operator== (const CModule &other) const
 {
-    return this->m_module_details.hModule == other.m_module_details.hModule;
+    return this->m_ModuleDetails.hModule == other.m_ModuleDetails.hModule;
 }
 
-module::module(MODULEENTRY32W details)
+CModule::CModule(MODULEENTRY32W details)
 {
-    m_module_details = details;
+    m_ModuleDetails = details;
 }
 
-module::~module(void)
+CModule::~CModule(void)
 {
 }
+
+__NS_END_KSTRINGS

@@ -1,5 +1,8 @@
-#include "StdAfx.h"
-#include "basics.h"
+// Core header
+#include "kstrings/core.hh"
+
+// File header
+#include "kstrings/basics.hh"
 
 void PrintLastError(LPTSTR lpszFunction)
 {

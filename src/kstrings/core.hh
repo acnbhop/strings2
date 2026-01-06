@@ -47,8 +47,12 @@
 
 #if KEN_PLATFORM_WINDOWS
 #pragma comment(lib, "Shlwapi.lib")
-#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <tlhelp32.h>
+#include <Psapi.h>
+#include <errno.h>
+
+#pragma comment(lib, "Psapi.lib")
 #endif
 
 #include <cstdint>
