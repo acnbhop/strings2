@@ -4,14 +4,10 @@
 
 // Core header
 #include "kstrings/core.hh"
-
-// All kstrings headers for the main file
-#include "kstrings.hh"
+#include "kstrings.hh"              // IWYU pragma: keep
 
 // Standard headers
-#include <algorithm>
 #include <cstring>
-#include <vector> 
 
 #if KEN_PLATFORM_WINDOWS
 #include <fcntl.h>
@@ -24,7 +20,7 @@ void SetConsoleUTF8 () { SetConsoleOutputCP (65001); }
 void SetConsoleUTF8 () {}
 #endif
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     SetConsoleUTF8 ();
 
