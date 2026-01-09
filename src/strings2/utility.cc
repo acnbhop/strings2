@@ -8,7 +8,10 @@
 // File header
 #include "strings2/utility.hh"
 
+NAMESPACE_BEGIN_STRINGS2
+
 #if AAO_PLATFORM_WINDOWS
+
 // Check if we are running under WOW64
 BOOL IsWin64()
 {
@@ -21,8 +24,6 @@ BOOL IsWin64()
     return FALSE;
 #endif
 }
-
-NAMESPACE_BEGIN_STRINGS2
 
 // Get Windows privileges for the current process
 bool GetPrivileges(HANDLE hProcess)
