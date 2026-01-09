@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
             {
                 try
                 {
-                    Options.iMinChars = std::stoi (argv[i + 1]);
+                    Options.iMinChars = std::stoi(argv[i + 1]);
                     i++;
                 }
                 catch (...)
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
                 // A full implementation would parse "start:end"
                 try
                 {
-                    Options.iOffsetStart = std::stoull (argv[i + 1]);
+                    Options.iOffsetStart = std::stoull(argv[i + 1]);
                     i++;
                 }
                 catch (...)
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            if (szFilterArg.empty ())
+            if (szFilterArg.empty())
                 szFilterArg = arg;
             else
             {
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    strings2::CStringParser *pParser = new strings2::CStringParser (Options);
+    strings2::CStringParser *pParser = new strings2::CStringParser(Options);
 
     if (bFlagDumpPid || bFlagDumpSystem)
     {
