@@ -97,23 +97,50 @@ int main(int argc, char *argv[])
                 }
                 catch (...)
                 {
+                    std::cerr << "Warning: Invalid minimum characters value specified: " << argv[i + 1] << std::endl;
                 }
             }
         }
         else if (arg == "-b")
         {
-            // Basic implementation of byte range args
             if (i + 1 < argc)
             {
-                // To keep it simple, we just parse the next int.
-                // A full implementation would parse "start:end"
+                std::string szRange = argv[i + 1];
+                i++;    // Consume
+
                 try
                 {
-                    Options.iOffsetStart = std::stoull(argv[i + 1]);
-                    i++;
+                    strings2::usize iColonPos = szRange.find(':');
+
+                    if (iColonPos == std::string::npos)
+                    {
+                        // No colon was found, treat entire string as offset
+                        //
+                        // Base 0 allows 0x prefix for hex automatically.
+                        Options.iOffsetStart = std::stoull(szRange, nullptr, 0);
+                    }
+                    else
+                    {
+                        // Colon was found so we parse "start:end"
+                        std::string szStartPart = szRange.substr(0, iColonPos);
+                        std::string szEndPart = szRange.substr(iColonPos + 1);
+
+                        // Parse start if it's not empty
+                        if (!szStartPart.empty())
+                        {
+                            Options.iOffsetStart = std::stoull(szStartPart, nullptr, 0);
+                        }
+
+                        // Parse end if it's not empty
+                        if (!szEndPart.empty())
+                        {
+                            Options.iOffsetEnd = std::stoull(szEndPart, nullptr, 0);
+                        }
+                    }
                 }
                 catch (...)
                 {
+                    std::cerr << "Warning: Invalid byte range format specified: " << szRange << std::endl;
                 }
             }
         }
