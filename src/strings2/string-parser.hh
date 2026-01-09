@@ -6,7 +6,7 @@
 // Core header
 #include "strings2/core.hh"
 
-// kstrings headers
+// strings2 headers
 #include "strings2/binary2strings.hh"
 #include "strings2/print-buffer.hh"
 

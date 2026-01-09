@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     if (bFlagHelp)
     {
         printf (
-            "kstrings extracts all unicode/ascii strings from binary data. On top of the classical "
+            "strings2 extracts all unicode/ascii strings from binary data. On top of the classical "
             "strings approach, this version decodes multilingual strings (eg Chinese, Russian, "
             "etc) and uses a ML model to suppress noisy uninteresting strings.\n\n");
         printf ("Example Usage:\n");

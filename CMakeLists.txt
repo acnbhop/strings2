@@ -4,7 +4,7 @@
 # Primary file for configuring.
 #===---------------------------------------------------------------------------------------------===
 cmake_minimum_required(VERSION 3.10)
-project(kstrings VERSION 1.0 LANGUAGES C CXX)
+project(strings2 VERSION 1.0 LANGUAGES C CXX)
 
 #
 # Global CMake modules

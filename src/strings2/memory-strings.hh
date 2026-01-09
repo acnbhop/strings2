@@ -6,7 +6,7 @@
 // Core header
 #include "strings2/core.hh"
 
-// kstrings headers
+// strings2 headers
 #include "strings2/basics.hh"
 #include "strings2/module.hh"
 #include "strings2/string-parser.hh"

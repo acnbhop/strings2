@@ -6,7 +6,7 @@
 // Core header
 #include "strings2/core.hh"
 
-// kstrings headers
+// strings2 headers
 #include "strings2/string-parser.hh"
 
 NAMESPACE_BEGIN_STRINGS2

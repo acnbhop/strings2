@@ -8,7 +8,7 @@
 // File header
 #include "strings2/string-parser.hh"
 
-// kstrings headers
+// strings2 headers
 #include "strings2/binary2strings.hh"
 
 NAMESPACE_BEGIN_STRINGS2
