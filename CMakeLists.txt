@@ -21,5 +21,5 @@ set(KEN_PROJ_ROOT ${CMAKE_SOURCE_DIR})
 # Global setup
 include(${KEN_PROJ_ROOT}/cmake/shared/setup.cmake)
 
-# kstrings setup
-include(${KEN_PROJ_ROOT}/cmake/kstrings.cmake)
+# strings2 setup
+include(${KEN_PROJ_ROOT}/cmake/strings2.cmake)
