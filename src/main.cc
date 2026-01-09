@@ -3,13 +3,13 @@
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
-#include "kstrings.hh"              // IWYU pragma: keep
+#include "strings2/core.hh"
+#include "strings2.hh"              // IWYU pragma: keep
 
 // Standard headers
 #include <cstring>
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 #include <fcntl.h>
 #include <io.h>
 // Define a helper to set the console output to UTF-8 on windows.
@@ -22,9 +22,9 @@ void SetConsoleUTF8 () {}
 
 int main(int argc, char *argv[])
 {
-    SetConsoleUTF8 ();
+    SetConsoleUTF8();
 
-    kstrings::sStringOptions options;
+    strings2::sStringOptions Options;
     std::string szFilterArg = "";
 
     bool bFlagHelp = false;
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     bool bFlagRecursive = false;
 
     // Check for piped input
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
     bool bPipedInput = !_isatty (_fileno (stdin));
 #else
     bool bPipedInput = !isatty (fileno (stdin));
@@ -49,38 +49,38 @@ int main(int argc, char *argv[])
         if (arg == "--help" || arg == "-help" || arg == "-h")
             bFlagHelp = true;
         else if (arg == "-f")
-            options.bPrintFilename = true;
+            Options.bPrintFilename = true;
         else if (arg == "-F")
-            options.bPrintFilepath = true;
+            Options.bPrintFilepath = true;
         else if (arg == "-r")
             bFlagRecursive = true;
         else if (arg == "-t")
-            options.bPrintStringType = true;
+            Options.bPrintStringType = true;
         else if (arg == "-s")
-            options.bPrintSpan = true;
+            Options.bPrintSpan = true;
         else if (arg == "-e")
-            options.bEscapeNewLines = true;
+            Options.bEscapeNewLines = true;
         else if (arg == "-json")
-            options.bPrintJson = true;
+            Options.bPrintJson = true;
         else if (arg == "-a")
         {
-            options.bPrintInteresting = true;
-            options.bPrintNotInteresting = true;
+            Options.bPrintInteresting = true;
+            Options.bPrintNotInteresting = true;
         }
         else if (arg == "-ni")
         {
-            options.bPrintInteresting = false;
-            options.bPrintNotInteresting = true;
+            Options.bPrintInteresting = false;
+            Options.bPrintNotInteresting = true;
         }
         else if (arg == "-utf" || arg == "-utf8")
         {
-            options.bPrintUTF8 = true;
-            options.bPrintWideString = false;
+            Options.bPrintUTF8 = true;
+            Options.bPrintWideString = false;
         }
         else if (arg == "-w" || arg == "-wide")
         {
-            options.bPrintUTF8 = false;
-            options.bPrintWideString = true;
+            Options.bPrintUTF8 = false;
+            Options.bPrintWideString = true;
         }
         else if (arg == "-pid")
             bFlagDumpPid = true;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
             {
                 try
                 {
-                    options.iMinChars = std::stoi (argv[i + 1]);
+                    Options.iMinChars = std::stoi (argv[i + 1]);
                     i++;
                 }
                 catch (...)
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
                 // A full implementation would parse "start:end"
                 try
                 {
-                    options.iOffsetStart = std::stoull (argv[i + 1]);
+                    Options.iOffsetStart = std::stoull (argv[i + 1]);
                     i++;
                 }
                 catch (...)
@@ -136,18 +136,18 @@ int main(int argc, char *argv[])
             "strings approach, this version decodes multilingual strings (eg Chinese, Russian, "
             "etc) and uses a ML model to suppress noisy uninteresting strings.\n\n");
         printf ("Example Usage:\n");
-        printf ("\tkstrings malware.exe\n");
-        printf ("\tkstrings *.exe > strings.txt\n");
-        printf ("\tkstrings ./files/*.exe > strings.txt\n");
-        printf ("\tkstrings -pid 419 > process_strings.txt\n");
-        printf ("\tkstrings -f -s -pid 0x1a3 > process_strings.txt\n");
-        printf ("\tkstrings -system > all_process_strings.txt\n");
-#if KEN_PLATFORM_WINDOWS
-        printf ("\ttype abcd.exe | kstrings > out.txt\n\n");
+        printf ("\tstrings2 malware.exe\n");
+        printf ("\tstrings2 *.exe > strings.txt\n");
+        printf ("\tstrings2 ./files/*.exe > strings.txt\n");
+        printf ("\tstrings2 -pid 419 > process_strings.txt\n");
+        printf ("\tstrings2 -f -s -pid 0x1a3 > process_strings.txt\n");
+        printf ("\tstrings2 -system > all_process_strings.txt\n");
+#if AAO_PLATFORM_WINDOWS
+        printf ("\ttype abcd.exe | strings2 > out.txt\n\n");
 #else
-        printf ("\tcat abcd.exe | kstrings > out.txt\n\n");
+        printf ("\tcat abcd.exe | strings2 > out.txt\n\n");
 #endif
-        printf ("\tkstrings malware.exe -json > strings.json\n");
+        printf ("\tstrings2 malware.exe -json > strings.json\n");
         printf ("Flags:\n");
         printf (" -r\n\tRecursively process subdirectories.\n");
         printf (" -f\n\tPrints the filename/processname for each string.\n");
@@ -173,21 +173,21 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    kstrings::CStringParser *pParser = new kstrings::CStringParser (options);
+    strings2::CStringParser *pParser = new strings2::CStringParser (Options);
 
     if (bFlagDumpPid || bFlagDumpSystem)
     {
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
         // Existing Windows Logic
-        if (IsWin64 () && sizeof (void *) == 4)
+        if (strings2::IsWin64() && sizeof (void *) == 4)
         {
             std::cerr << "WARNING: Running 32-bit binary on 64-bit OS. Process dumping may fail."
                       << std::endl;
         }
-        GetPrivileges (GetCurrentProcess ());
+        strings2::GetPrivileges(GetCurrentProcess ());
 
         // CMemoryStrings is Windows-specific
-        kstrings::CMemoryStrings *pProcess = new kstrings::CMemoryStrings (pParser);
+        strings2::CMemoryStrings *pProcess = new strings2::CMemoryStrings(pParser);
 
         if (bFlagDumpPid)
         {
@@ -214,11 +214,11 @@ int main(int argc, char *argv[])
     }
     else if (bPipedInput)
     {
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
         _setmode (_fileno (stdin), _O_BINARY);
 #endif
 // Use fdopen to get a FILE* from the stdin file descriptor
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
         FILE *fh = _fdopen (_fileno (stdin), "rb");
 #else
         FILE *fh = fdopen (fileno (stdin), "rb");

@@ -1,22 +1,16 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/string-parser.hh
+// strings2/string-parser.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // kstrings headers
-#include "kstrings/binary2strings.hh"
-#include "kstrings/print-buffer.hh"
+#include "strings2/binary2strings.hh"
+#include "strings2/print-buffer.hh"
 
-// Standard headers
-#include <algorithm>
-
-// External headers
-#include "extern/json.hpp"
-
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 // The maximum string size
 constexpr s32 iMaxStringSize = 0x2000;
@@ -44,6 +38,17 @@ struct sStringOptions
 // String parser class
 class CStringParser
 {
+public:
+    // Constructor
+    CStringParser(sStringOptions Options);
+    // Parse a memory block
+    bool ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNameShort, std::string szNameLong,
+                    u64 iBaseAddress);
+    // Parse a file stream
+    bool ParseStream(FILE* pFileHandle, std::string szNameShort, std::string szNameLong);
+    // Destructor
+    ~CStringParser(void);
+private:
     enum class eExtractType
     {
         EXT_Raw, // Extract raw strings
@@ -59,17 +64,6 @@ class CStringParser
 
     sStringOptions m_Options; // String parsing options
     CPrintBuffer* m_Printer;  // Print buffer
-
-public:
-    // Constructor
-    CStringParser(sStringOptions Options);
-    // Parse a memory block
-    bool ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNameShort, std::string szNameLong,
-                    u64 iBaseAddress);
-    // Parse a file stream
-    bool ParseStream(FILE* pFileHandle, std::string szNameShort, std::string szNameLong);
-    // Destructor
-    ~CStringParser(void);
 };
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

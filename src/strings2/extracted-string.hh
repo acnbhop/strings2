@@ -1,16 +1,16 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/extracted-string.hh
+// strings2/extracted-string.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 #include <codecvt>
 #include <string>
 #include <unordered_set>
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 // String types
 enum class eStringType
@@ -23,12 +23,6 @@ enum class eStringType
 // Extracted string class
 class CExtractedString
 {
-private:
-    eStringType m_Type;   // String type
-    std::string m_String; // Supports Utf8
-    usize m_SizeInBytes;  // Size in bytes
-    s32 m_OffsetStart;    // Offset start in the buffer
-    s32 m_OffsetEnd;      // Offset end in the buffer
 public:
     // Constructor
     CExtractedString();
@@ -49,6 +43,12 @@ public:
 
     // Destructor
     ~CExtractedString();
+private:
+    eStringType m_Type;   // String type
+    std::string m_String; // Supports Utf8
+    usize m_SizeInBytes;  // Size in bytes
+    s32 m_OffsetStart;    // Offset start in the buffer
+    s32 m_OffsetEnd;      // Offset end in the buffer
 };
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

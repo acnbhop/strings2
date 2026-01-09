@@ -1,34 +1,34 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/extracted-string.cc
+// strings2/extracted-string.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/extracted-string.hh"
+#include "strings2/extracted-string.hh"
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 // gcc-disable: -Wdeprecated-declarations
-#if KEN_COMPILER_GCC
+#if AAO_COMPILER_GCC
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 // apple-clang-disable: -Wdeprecated-declarations
-#if KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_APPLE_CLANG
 #   pragma clang diagnostic push
 #   pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 std::wstring_convert<std::codecvt_utf8<wchar_t>> _converter;
 
-#if KEN_COMPILER_GCC
+#if AAO_COMPILER_GCC
 #   pragma GCC diagnostic pop
 #endif
 
-#if KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_APPLE_CLANG
 #   pragma clang diagnostic pop
 #endif
 
@@ -88,7 +88,7 @@ f32 CExtractedString::GetProbaInteresting()
     std::unordered_set<wchar_t> CharacterCounts; // Character counts
 
     // gcc-disable: -Wsign-compare
-    #if KEN_COMPILER_GCC
+    #if AAO_COMPILER_GCC
     #   pragma GCC diagnostic push
     #   pragma GCC diagnostic ignored "-Wsign-compare"
     #endif
@@ -106,7 +106,7 @@ f32 CExtractedString::GetProbaInteresting()
             if (i + 1 < iLength && m_String[i + 1] >= 0x9 && m_String[i + 1] <= 0x7E)
             {
 
-            #if KEN_COMPILER_GCC
+            #if AAO_COMPILER_GCC
             #   pragma GCC diagnostic pop
             #endif
 
@@ -129,7 +129,7 @@ f32 CExtractedString::GetProbaInteresting()
         (f32)string_model::fWeights[118 + 118 + 118 * 118 + 2] * (float)CharacterCounts.size();
 
     // Convert it to a probability
-    return 1.0f / (1.0f + kstrings::exp(-fScore));
+    return 1.0f / (1.0f + exp(-fScore));    // should use 'exp' from core.hh now...
 }
 
 usize CExtractedString::GetSizeInBytes() { return m_SizeInBytes; }
@@ -165,4 +165,4 @@ CExtractedString::~CExtractedString()
     // Nothing to do
 }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

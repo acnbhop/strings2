@@ -1,20 +1,20 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/globals.hh
+// strings2/globals.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // clang-format off
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // Standard headers
 #include <unordered_set>
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 // gcc-disable: -Wunused-variable
-#if KEN_COMPILER_GCC
+#if AAO_COMPILER_GCC
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
@@ -657,10 +657,10 @@ constexpr f64 fWeights[118 + 118 + 118 * 118 + 1 + 1 + 1] = {
     0.000000, 0.000000, 0.000000 };
 } // namespace kstrings::string_model
 
-#if KEN_COMPILER_GCC
+#if AAO_COMPILER_GCC
 #pragma GCC diagnostic pop
 #endif
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2
 
 // clang-format on

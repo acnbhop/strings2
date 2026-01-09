@@ -1,21 +1,19 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/binary2strings.hh
+// strings2/binary2strings.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // kstrings headers
-#include "kstrings/extracted-string.hh"
-// Moved to other file since it's expensive to render on screen in here.
-// kstrings/globals.hh
+#include "strings2/extracted-string.hh"
 
 // Standard headers
 #include <string>
 #include <vector>
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 #define WINDOW_SIZE 11
 
@@ -38,4 +36,4 @@ TryExtractStringTuple(const u8* pBuffer, usize iBufferSize, isize iOffset, usize
 std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>>
 ExtractAllStrings(const u8 pBuffer[], usize iBufferSize, usize iMinChars, bool bOnlyInteresting);
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

@@ -1,4 +1,4 @@
-# kstrings - fork of strings2
+# strings2 - fork of strings2
 This is fork of 'strings2' and is intended to be cross-platform.
 
 Uses CMake for building.
@@ -17,7 +17,7 @@ Uses CMake for building.
 
 ## Documentation
 
-```kstrings (options) file_pattern```
+```strings2 (options) file_pattern```
 
 * `file_pattern` can be a folder or file. Wildcards (`*`) are supported in the filename parts - eg `.\files\*.dat`.
 

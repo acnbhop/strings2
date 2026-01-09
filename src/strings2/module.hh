@@ -1,14 +1,14 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/module.hh
+// strings2/module.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 class CModule
 {
@@ -25,13 +25,13 @@ public:
     std::string GetFilename() const;
 
     // Constructor
-    CModule(MODULEENTRY32W details);
+    CModule(MODULEENTRY32W Details);
     // Destructor
     ~CModule(void);
 
     bool operator==(const CModule& other) const;
 };
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2
 
-#endif // KEN_PLATFORM_WINDOWS
+#endif // AAO_PLATFORM_WINDOWS

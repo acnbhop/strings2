@@ -1,18 +1,16 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/memory-strings.cc
+// strings2/memory-strings.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/memory-strings.hh"
+#include "strings2/memory-strings.hh"
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 
-#include <iostream>
-
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 // TODO: ???
 #if 0
@@ -226,22 +224,22 @@ bool CMemoryStrings::_ProcessAllMemory(HANDLE pHandle, std::string process_name)
     return true;
 }
 
-void CMemoryStrings::_GenerateModuleList(HANDLE hSnapshot)
+void CMemoryStrings::_GenerateModuleList(HANDLE pSnapshot)
 {
     MODULEENTRY32W tmp_m;
     tmp_m.dwSize = sizeof(MODULEENTRY32W);
 
-    if (Module32FirstW(hSnapshot, &tmp_m))
+    if (Module32FirstW(pSnapshot, &tmp_m))
     {
         m_Modules.push_back(CModule(tmp_m));
 
-        while (Module32NextW(hSnapshot, &tmp_m))
+        while (Module32NextW(pSnapshot, &tmp_m))
         {
             m_Modules.push_back(CModule(tmp_m));
         }
     }
 }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2
 
-#endif // KEN_PLATFORM_WINDOWS
+#endif // AAO_PLATFORM_WINDOWS

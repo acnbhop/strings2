@@ -1,17 +1,17 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/string-parser.cc
+// strings2/string-parser.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/string-parser.hh"
+#include "strings2/string-parser.hh"
 
 // kstrings headers
-#include "kstrings/binary2strings.hh"
+#include "strings2/binary2strings.hh"
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 bool CStringParser::ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNameShort,
                                std::string szNameLong, u64 iBaseAddress)
@@ -31,7 +31,7 @@ bool CStringParser::ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNam
             Json["name_long"] = szNameLong;
 
             // gcc-disable: -Wsign-compare
-            #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+            #if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
             #   if KEN_COMPILER_APPLE_CLANG
             #       pragma clang diagnostic push
             #       pragma clang diagnostic ignored "-Wsign-compare"
@@ -57,7 +57,7 @@ bool CStringParser::ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNam
             for (int i = 0; i < r_vect.size(); i++)
             {
 
-                #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                #if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
                 #   if KEN_COMPILER_APPLE_CLANG
                 #       pragma clang diagnostic pop
                 #   else
@@ -65,7 +65,7 @@ bool CStringParser::ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNam
                 #   endif
                 #endif
 
-                #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                #if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
                 #   if KEN_COMPILER_APPLE_CLANG
                 #       pragma clang diagnostic push
                 #       pragma clang diagnostic ignored "-Wlogical-op-parentheses"
@@ -80,7 +80,7 @@ bool CStringParser::ParseBlock(u8* pBuffer, u32 iBufferLength, std::string szNam
                     !is_interesting && m_Options.bPrintNotInteresting)
                 {
 
-                #if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+                #if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
                 #   if KEN_COMPILER_APPLE_CLANG
                 #       pragma clang diagnostic pop
                 #   else
@@ -179,7 +179,7 @@ bool CStringParser::ParseStream(FILE* pFileHandle, std::string szNameShort, std:
             {
                 iNumRead =
                     (s32)fread(pBuffer, 1,
-                               kstrings::min((usize)iBlockSize, (usize)(m_Options.iOffsetEnd -
+                               strings2::min((usize)iBlockSize, (usize)(m_Options.iOffsetEnd -
                                                                         m_Options.iOffsetStart)),
                                pFileHandle);
             }
@@ -217,4 +217,4 @@ bool CStringParser::ParseStream(FILE* pFileHandle, std::string szNameShort, std:
 
 CStringParser::~CStringParser(void) { delete m_Printer; }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

@@ -1,14 +1,14 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/utility.cc
+// strings2/utility.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/utility.hh"
+#include "strings2/utility.hh"
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 // Check if we are running under WOW64
 BOOL IsWin64()
 {
@@ -21,6 +21,8 @@ BOOL IsWin64()
     return FALSE;
 #endif
 }
+
+NAMESPACE_BEGIN_STRINGS2
 
 // Get Windows privileges for the current process
 bool GetPrivileges(HANDLE hProcess)
@@ -41,7 +43,7 @@ bool GetPrivileges(HANDLE hProcess)
                                 &iTokenLength // Size needed if buffer is too small
                                 ))
         {
-            for (kstrings::usize i = 0; i < privilages->PrivilegeCount; i++)
+            for (usize i = 0; i < privilages->PrivilegeCount; i++)
             {
                 privilages->Privileges[i].Attributes = SE_PRIVILEGE_ENABLED;
             }
@@ -61,7 +63,7 @@ bool GetPrivileges(HANDLE hProcess)
     return false;
 }
 
-#endif // KEN_PLATFORM_WINDOWS
+#endif // AAO_PLATFORM_WINDOWS
 
 bool MatchesFilter(const std::string& szFilename, const std::string& szFilter)
 {
@@ -88,7 +90,7 @@ bool MatchesFilter(const std::string& szFilename, const std::string& szFilter)
 }
 
 void ProcessPath(const std::filesystem::path& fsPath, const std::string& szFilter,
-                 bool bRecursively, kstrings::CStringParser* pParser)
+                 bool bRecursively, CStringParser* pParser)
 {
     try
     {
@@ -134,3 +136,5 @@ void ProcessPath(const std::filesystem::path& fsPath, const std::string& szFilte
         std::cerr << "Filesystem error: " << ex.what() << std::endl;
     }
 }
+
+NAMESPACE_END_STRINGS2

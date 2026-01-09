@@ -1,81 +1,81 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/core.hh
+// strings2/core.hh
 //===------------------------------------------------------------------------------------------===//
 #pragma once
 
 #if defined(__clang__)
-#define KEN_COMPILER_CLANG 1
+#define AAO_COMPILER_CLANG 1
 #if defined(__apple_build_version__)
-#define KEN_COMPILER_APPLE_CLANG 1
+#define AAO_COMPILER_APPLE_CLANG 1
 #else
-#define KEN_COMPILER_APPLE_CLANG 0
+#define AAO_COMPILER_APPLE_CLANG 0
 #endif
 #else
-#define KEN_COMPILER_CLANG 0
-#define KEN_COMPILER_APPLE_CLANG 0
-#endif
-
-#if KEN_COMPILER_CLANG && defined(_MSC_VER)
-#undef KEN_COMPILER_CLANG
-#define KEN_COMPILER_CLANG_CL 1
-#else
-#define KEN_COMPILER_CLANG_CL 0
+#define AAO_COMPILER_CLANG 0
+#define AAO_COMPILER_APPLE_CLANG 0
 #endif
 
-#if !KEN_COMPILER_CLANG && (defined(__GNUC__) || defined(__GNUG__))
-#define KEN_COMPILER_GCC 1
+#if AAO_COMPILER_CLANG && defined(_MSC_VER)
+#undef AAO_COMPILER_CLANG
+#define AAO_COMPILER_CLANG_CL 1
 #else
-#define KEN_COMPILER_GCC 0
+#define AAO_COMPILER_CLANG_CL 0
+#endif
+
+#if !AAO_COMPILER_CLANG && (defined(__GNUC__) || defined(__GNUG__))
+#define AAO_COMPILER_GCC 1
+#else
+#define AAO_COMPILER_GCC 0
 #endif
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
-#define KEN_CPU_X86_64 1
+#define AAO_CPU_X86_64 1
 #else
-#define KEN_CPU_X86_64 0
+#define AAO_CPU_X86_64 0
 #endif
 
 #if defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64)
-#define KEN_CPU_ARM64 1
+#define AAO_CPU_ARM64 1
 #else
-#define KEN_CPU_ARM64 0
+#define AAO_CPU_ARM64 0
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-#define KEN_PLATFORM_WINDOWS 1
+#define AAO_PLATFORM_WINDOWS 1
 #if defined(_WIN64)
-#define KEN_PLATFORM_WIN64 1
+#define AAO_PLATFORM_WIN64 1
 #else
-#define KEN_PLATFORM_WIN64 0
+#define AAO_PLATFORM_WIN64 0
 #endif
-#if !KEN_PLATFORM_WIN64 && (defined(_WIN32))
-#define KEN_PLATFORM_WIN32 1
+#if !AAO_PLATFORM_WIN64 && (defined(_WIN32))
+#define AAO_PLATFORM_WIN32 1
 #else
-#define KEN_PLATFORM_WIN32 0
+#define AAO_PLATFORM_WIN32 0
 #endif
 #else
-#define KEN_PLATFORM_WINDOWS 0
-#define KEN_PLATFORM_WIN64 0
-#define KEN_PLATFORM_WIN32 0
+#define AAO_PLATFORM_WINDOWS 0
+#define AAO_PLATFORM_WIN64 0
+#define AAO_PLATFORM_WIN32 0
 #endif
 
 #if defined(__linux__)
-#define KEN_PLATFORM_LINUX 1
+#define AAO_PLATFORM_LINUX 1
 #else
-#define KEN_PLATFORM_LINUX 0
+#define AAO_PLATFORM_LINUX 0
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
-#define KEN_PLATFORM_DARWIN 1
+#define AAO_PLATFORM_DARWIN 1
 #else
-#define KEN_PLATFORM_DARWIN 0
+#define AAO_PLATFORM_DARWIN 0
 #endif
 
 // Silence C++17 deprecation for codecvt
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 #define _CRT_SECURE_NO_WARNINGS
-#if !KEN_COMPILER_GCC
+#if !AAO_COMPILER_GCC
 #pragma comment(lib, "Shlwapi.lib")
 #endif
 #define NOMINMAX
@@ -83,24 +83,29 @@
 #include <Psapi.h>
 #include <errno.h>
 #include <tlhelp32.h>
-#if !KEN_COMPILER_GCC
+#if !AAO_COMPILER_GCC
 #pragma comment(lib, "Psapi.lib")
 #endif
 #endif
 
 #include <cstddef>
 #include <cstdint>
-
+#include <iostream>
 #include <filesystem>
+#include <sstream>
 #include <iostream>
 #include <string>
+#include <algorithm>
+
+// External headers
+#include "extern/json.hpp"
 
 // Apple Clang needs this for std::stringstream
-#if KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_APPLE_CLANG
 #include <sstream>
 #endif
 
-namespace kstrings
+namespace strings2
 {
 
 using f32 = float;
@@ -143,11 +148,11 @@ template <typename T> constexpr T exp(T x)
     return result;
 }
 
-} // namespace kstrings
+} // namespace strings2
 
-#define NAMESPACE_BEGIN_KSTRINGS                                                                   \
-    namespace kstrings                                                                             \
+#define NAMESPACE_BEGIN_STRINGS2                                                                   \
+    namespace strings2                                                                             \
     {
-#define NAMESPACE_END_KSTRINGS }
+#define NAMESPACE_END_STRINGS2 }
 
-#include "kstrings/globals.hh"
+#include "strings2/globals.hh"

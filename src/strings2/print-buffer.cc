@@ -1,14 +1,14 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/print-buffer.cc
+// strings2/print-buffer.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/print-buffer.hh"
+#include "strings2/print-buffer.hh"
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 CPrintBuffer::CPrintBuffer(s32 iBufferSize)
 {
@@ -79,9 +79,13 @@ void CPrintBuffer::Digest()
 CPrintBuffer::~CPrintBuffer(void)
 {
     if (m_bAddJsonClose)
+    {
         AddString("]");
+    }
+    
     Digest();
+
     delete[] m_pBuffer;
 }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

@@ -1,18 +1,16 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/module.cc
+// strings2/module.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/module.hh"
+#include "strings2/module.hh"
 
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
 
-#include <filesystem>
-
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 bool CModule::Contains(u64 iAddress) const
 {
@@ -55,10 +53,10 @@ bool CModule::operator==(const CModule& other) const
     return this->m_ModuleDetails.hModule == other.m_ModuleDetails.hModule;
 }
 
-CModule::CModule(MODULEENTRY32W details) { m_ModuleDetails = details; }
+CModule::CModule(MODULEENTRY32W Details) { m_ModuleDetails = Details; }
 
 CModule::~CModule(void) {}
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2
 
-#endif // KEN_PLATFORM_WINDOWS
+#endif // AAO_PLATFORM_WINDOWS

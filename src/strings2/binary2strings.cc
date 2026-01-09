@@ -1,14 +1,14 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/binary2strings.cc
+// strings2/binary2strings.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/binary2strings.hh"
+#include "strings2/binary2strings.hh"
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 usize TryUTF8CharStep(const u8* pBuffer, usize iBufferSize, isize iOffset)
 {
@@ -121,7 +121,7 @@ s32 GetLanguageGroup(wchar_t c)
     return BMP12BitsToGroup[c >> 4]; // Leading 12 bits identify the language group
 }
 
-#if KEN_PLATFORM_WINDOWS && !KEN_COMPILER_GCC
+#if AAO_PLATFORM_WINDOWS && !KEN_COMPILER_GCC
 __declspec(safebuffers)
 #endif
 CExtractedString* TryExtractString(const u8* pBuffer, usize iBufferSize, isize iOffset,
@@ -299,8 +299,8 @@ ExtractAllStrings(const u8 pBuffer[], usize iBufferSize, usize iMinChars, bool o
     std::vector<std::tuple<std::string, std::string, std::pair<s32, s32>, bool>> r_vect_filt;
 
 // gcc-disable: -Wsign-compare
-#if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
-#if KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_APPLE_CLANG
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wsign-compare"
 #else
@@ -320,8 +320,8 @@ ExtractAllStrings(const u8 pBuffer[], usize iBufferSize, usize iMinChars, bool o
         if (i + WINDOW_SIZE < proba_interesting_avg_vect.size())
         {
 
-#if KEN_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
-#if KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_GCC || KEN_COMPILER_APPLE_CLANG
+#if AAO_COMPILER_APPLE_CLANG
 #pragma clang diagnostic pop
 #else
 #pragma GCC diagnostic pop
@@ -343,4 +343,4 @@ ExtractAllStrings(const u8 pBuffer[], usize iBufferSize, usize iMinChars, bool o
     return r_vect_filt;
 }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

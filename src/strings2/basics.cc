@@ -1,22 +1,22 @@
 //===------------------------------------------------------------------------------------------===//
-// kstrings/basics.cc
+// strings2/basics.cc
 //===------------------------------------------------------------------------------------------===//
 
 // Core header
-#include "kstrings/core.hh"
+#include "strings2/core.hh"
 
 // File header
-#include "kstrings/basics.hh"
+#include "strings2/basics.hh"
 
 #if !KEN_PLATFORM_WINDOWS
 #include <cerrno>
 #endif
 
-NAMESPACE_BEGIN_KSTRINGS
+NAMESPACE_BEGIN_STRINGS2
 
 void PrintLastError(const std::string& szMsg)
 {
-#if KEN_PLATFORM_WINDOWS
+#if AAO_PLATFORM_WINDOWS
     // Retrieve the system error message for the last-error code
     LPVOID lpMsgBuf;
     DWORD dw = GetLastError();
@@ -56,4 +56,4 @@ void PrintLastError(const std::string& szMsg)
 #endif
 }
 
-NAMESPACE_END_KSTRINGS
+NAMESPACE_END_STRINGS2

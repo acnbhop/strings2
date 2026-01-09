@@ -5,7 +5,7 @@
 #===---------------------------------------------------------------------------------------------===
 
 # Set the project name for configuration to apply the settings
-set(KEN_PROJECT_NAME kstrings)
+set(KEN_PROJECT_NAME strings2)
 
 # Set standards (from the original project)
 set(CMAKE_CXX_STANDARD 20)
@@ -14,27 +14,27 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Executable
-add_executable(kstrings
+add_executable(strings2
     src/main.cc
 
-    src/kstrings/basics.cc
-    src/kstrings/basics.hh
-    src/kstrings/binary2strings.cc
-    src/kstrings/binary2strings.hh
-    src/kstrings/core.hh
-    src/kstrings/extracted-string.cc
-    src/kstrings/extracted-string.hh
-    src/kstrings/globals.hh
-    src/kstrings/memory-strings.cc
-    src/kstrings/memory-strings.hh
-    src/kstrings/module.cc
-    src/kstrings/module.hh
-    src/kstrings/print-buffer.cc
-    src/kstrings/print-buffer.hh
-    src/kstrings/string-parser.cc
-    src/kstrings/string-parser.hh
-    src/kstrings/utility.cc
-    src/kstrings/utility.hh
+    src/strings2/basics.cc
+    src/strings2/basics.hh
+    src/strings2/binary2strings.cc
+    src/strings2/binary2strings.hh
+    src/strings2/core.hh
+    src/strings2/extracted-string.cc
+    src/strings2/extracted-string.hh
+    src/strings2/globals.hh
+    src/strings2/memory-strings.cc
+    src/strings2/memory-strings.hh
+    src/strings2/module.cc
+    src/strings2/module.hh
+    src/strings2/print-buffer.cc
+    src/strings2/print-buffer.hh
+    src/strings2/string-parser.cc
+    src/strings2/string-parser.hh
+    src/strings2/utility.cc
+    src/strings2/utility.hh
 )
 
 # Global configuration
