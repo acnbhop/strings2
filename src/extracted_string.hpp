@@ -1,6 +1,7 @@
 //
 // extracted_string.hpp: Class for extracted strings
 //
+
 #pragma once
 
 #include <string>
