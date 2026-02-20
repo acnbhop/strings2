@@ -3,7 +3,7 @@
 //
 
 #include "StdAfx.h"
-#include "print_buffer.h"
+#include "print_buffer.hpp"
 #include <string>
 
 print_buffer::print_buffer(int buffer_size)

@@ -3,7 +3,7 @@
 //
 
 #include "StdAfx.h"
-#include "string_parser.h"
+#include "string_parser.hpp"
 
 using namespace nlohmann;
 

@@ -7,7 +7,7 @@
 #include "windows.h"
 #include "module.h"
 #include <tlhelp32.h>
-#include "string_parser.h"
+#include "string_parser.hpp"
 #include <Psapi.h>
 #include <vector>
 #include "basics.h"

@@ -5,7 +5,7 @@
 #pragma execution_character_set( "utf-8" )
 
 #include "stdafx.h"
-#include "string_parser.h"
+#include "string_parser.hpp"
 #include "windows.h"
 #include <sys/types.h>
 #include "dirent.h"
@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
-#include "memory_strings.h"
+#include "memory_strings.hpp"
 #include <string>
 #include <filesystem>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING

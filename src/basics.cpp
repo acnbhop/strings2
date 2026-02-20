@@ -3,7 +3,7 @@
 //
 
 #include "StdAfx.h"
-#include "basics.h"
+#include "basics.hpp"
 
 void PrintLastError(LPTSTR lpszFunction)
 {

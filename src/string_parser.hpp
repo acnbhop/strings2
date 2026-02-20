@@ -6,7 +6,7 @@
 
 #include <string>
 #include "windows.h"
-#include "print_buffer.h"
+#include "print_buffer.hpp"
 #include "binary2strings.hpp"
 #include "json.hpp"
 #include <algorithm>

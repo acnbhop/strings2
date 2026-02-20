@@ -3,7 +3,7 @@
 //
 
 #include "StdAfx.h"
-#include "memory_strings.h"
+#include "memory_strings.hpp"
 
 bool IsWin64(HANDLE process)
 {

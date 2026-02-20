@@ -3,7 +3,7 @@
 //
 
 #include "StdAfx.h"
-#include "module.h"
+#include "module.hpp"
 
 bool module::contains(PVOID64 address)
 {
