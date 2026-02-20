@@ -1,3 +1,7 @@
+//
+// memory_strings.cpp
+//
+
 #include "StdAfx.h"
 #include "memory_strings.h"
 

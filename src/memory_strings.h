@@ -1,4 +1,9 @@
+//
+// memory_strings.h
+//
+
 #pragma once
+
 #include "windows.h"
 #include "module.h"
 #include <tlhelp32.h>

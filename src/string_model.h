@@ -1,3 +1,7 @@
+//
+// string_model.h
+//
+
 #pragma once
 
 namespace string_model {

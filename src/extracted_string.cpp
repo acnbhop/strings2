@@ -1,4 +1,7 @@
-// Class for extracted strings
+//
+// extracted_string.cpp: Class for extracted strings
+//
+
 #include "stdafx.h"
 #include "extracted_string.hpp"
 

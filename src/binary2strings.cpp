@@ -1,3 +1,7 @@
+//
+// binary2strings.cpp
+//
+
 #include "stdafx.h"
 #include "binary2strings.hpp"
 

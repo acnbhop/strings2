@@ -1,4 +1,5 @@
-// strings.cpp : Defines the entry point for the console application.
+//
+// strings.cpp: Defines the entry point for the console application.
 //
 #pragma once
 #pragma execution_character_set( "utf-8" )

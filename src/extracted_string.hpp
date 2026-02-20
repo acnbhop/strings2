@@ -1,5 +1,8 @@
-// Class for extracted strings
+//
+// extracted_string.hpp: Class for extracted strings
+//
 #pragma once
+
 #include <string>
 #include <codecvt>
 #include "string_model.h"
