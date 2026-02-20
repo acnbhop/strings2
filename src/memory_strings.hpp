@@ -1,16 +1,16 @@
 //
-// memory_strings.h
+// memory_strings.hpp
 //
 
 #pragma once
 
 #include "windows.h"
-#include "module.h"
+#include "module.hpp"
 #include <tlhelp32.h>
 #include "string_parser.hpp"
 #include <Psapi.h>
 #include <vector>
-#include "basics.h"
+#include "basics.hpp"
 #include <string>
 #include <sstream>
 

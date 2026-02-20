@@ -1,5 +1,5 @@
 //
-// module.h
+// module.hpp
 //
 
 #pragma once
