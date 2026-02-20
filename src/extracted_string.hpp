@@ -5,7 +5,7 @@
 
 #include <string>
 #include <codecvt>
-#include "string_model.h"
+#include "string_model.hpp"
 #include <unordered_set>
 
 using namespace std;
